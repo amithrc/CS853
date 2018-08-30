@@ -35,3 +35,13 @@ https://www.mkyong.com/maven/how-to-install-maven-in-windows/
 
 If you do not like to create the Maven project, feel free to use the Lucene Library (7.4.0) and then you can commit the code
 into proper directory structure.
+
+
+# Issues running Maven
+
+If you see the compile error saying the JAVA_HOME is not set, most probably, JAVA_HOME is not set. You need to modify the .bashrc.
+'''
+JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-amd64"  
+export JAVA_HOME  
+export PATH=$PATH:$JAVA_HOME/bin  
+'''
