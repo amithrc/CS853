@@ -1,14 +1,14 @@
-## CS853
+# CS853
 This repository contains all the source code for the CS 853. 
 
 
 # Java
 
-version 1.8
+version **1.8**
 
 # Lucene
 
-Version 7.4.0
+Version **7.4.0**
 
 # Build Tool
 
@@ -25,12 +25,11 @@ https://www.mkyong.com/maven/how-to-install-maven-in-windows/
 
 # How to Run it?
 
-git clone https://github.com/amithrc/CS853.git
-mvn compile --> Compiles the code
-mvn package --> Compiles and create the jar file in the target Directory.
-
-java -jar <jar_name> should run the program. 
-mvn clean --> Removes all the existing build.
+git clone https://github.com/amithrc/CS853.git  
+mvn compile --> Compiles the code  
+mvn package --> Compiles and create the jar file in the target Directory.  
+java -jar <jar_name> should run the program.   
+mvn clean --> Removes all the existing build.  
 
 # General Instructions
 
