@@ -40,8 +40,12 @@ into proper directory structure.
 # Issues running Maven
 
 If you see the compile error saying the JAVA_HOME is not set, most probably, JAVA_HOME is not set. You need to modify the .bashrc.
-'''
+This is what what I would add to ~/.bashrc
+
+```
 JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-amd64"  
 export JAVA_HOME  
 export PATH=$PATH:$JAVA_HOME/bin  
-'''
+```
+
+Windows you need to set the JAVA_HOME appropriately 
