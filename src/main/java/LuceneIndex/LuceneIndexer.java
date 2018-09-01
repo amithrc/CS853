@@ -30,12 +30,12 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LuceneIndexer{
+class LuceneIndexer{
 	
 	   private IndexWriter indexWriter = null;
 	   private String[] mode = null;
 
-	    public IndexWriter getIndexWriter(boolean create) throws IOException {
+	   IndexWriter getIndexWriter() throws IOException {
 	        if (indexWriter == null) {
 	            Directory indexDir = FSDirectory.open(Paths.get("index-directory"));
 	            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
@@ -46,9 +46,9 @@ public class LuceneIndexer{
 	        return indexWriter;
 	   }
 	    
-	 public IndexWriter parseParagraph(IndexWriter indexWriter) {
-		 if (mode.equals("paragraphs")) {
-	            String paragraphsFile = mode[0];
+	 private IndexWriter parseParagraph(IndexWriter indexWriter) {
+		 if (mode[0].equals("paragraphs")) {
+	            String paragraphsFile = mode[1];
 	            FileInputStream fileInputStream2 = null;
 	            try {
 	            	fileInputStream2 = new FileInputStream(new File(paragraphsFile));
@@ -61,14 +61,12 @@ public class LuceneIndexer{
 	            	
 	            	  Document doc = new Document();
 	            	  doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
-	            	   
-	            	  doc.add(new StringField("body", p.getBodies().get(0).toString(), Field.Store.YES));
+	            	  doc.add(new TextField("body", p.getTextOnly().toLowerCase(), Field.Store.YES));
 	            	  try {
 	            	  indexWriter.addDocument(doc);
 	            	  }catch(IOException ioe) {
-	            		  System.out.println(ioe.getMessage());
-	            	  }
-	            	  System.out.println();
+                          System.out.println(ioe.getMessage());
+                      }
 	            }
 	            
 		 }
@@ -76,13 +74,13 @@ public class LuceneIndexer{
 		 
 	 }
 
-	    public void closeIndexWriter() throws IOException {
+	 void closeIndexWriter() throws IOException {
 	        if (indexWriter != null) {
 	            indexWriter.close();
 	        }
 	   }
-	
-	   public void setMode(String[] input) {
+
+	   void setMode(String[] input) {
 	    	mode = input;
 	   }
 	

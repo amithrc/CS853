@@ -3,6 +3,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.search.TopDocs;
@@ -13,33 +14,83 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class LuceneSearcher
 {
 	
-	static final String INDEX_DIRECTORY = "Index";
+	private final String INDEX_DIRECTORY = "index-directory";
+	private final String[] QUERY = {"power nap benefits",
+			"whale vocalization production of sound",
+			"pokemon puzzle league"};
 
 	
 	 private IndexSearcher searcher = null;
-	    private QueryParser parser = null;
+	 private QueryParser parser = null;
 
 	    /** Creates a new instance of SearchEngine */
 	    public LuceneSearcher() throws IOException {
 	        searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(INDEX_DIRECTORY))));
-	        parser = new QueryParser("content", new StandardAnalyzer());
+	        parser = new QueryParser("body", new StandardAnalyzer());
 	    }
 
-	    public TopDocs performSearch(String queryString, int n)
+	    private TopDocs performSearch(String queryString, int n)
 	    throws IOException, ParseException {
-	        Query query = parser.parse(queryString);
-	        return searcher.search(query, n);
+	        Query queryObj = parser.parse(queryString);
+	        return searcher.search(queryObj, n);
 	    }
 
-	    public Document getDocument(int docId)
+	    private List getDocument(TopDocs documents)
 	    throws IOException {
-	        return searcher.doc(docId);
+
+			ScoreDoc[] scoringDocuments = documents.scoreDocs;
+
+			List<String[]> rankingDocuments = new ArrayList<>();
+
+			for(int ind=0; ind<scoringDocuments.length; ind++){
+
+				ScoreDoc scoringDoc = scoringDocuments[ind];
+				Document rankedDoc = searcher.doc(scoringDoc.doc);
+
+				String docScore = String.valueOf(scoringDoc.score);
+				String paraId = rankedDoc.getField("id").stringValue();
+				String paraBody = rankedDoc.getField("body").stringValue();
+				String paraRank = String.valueOf(ind+1);
+				System.out.println(paraId+" "+docScore);
+
+				rankingDocuments.add(new String[] {paraId, paraBody, docScore, paraRank});
+			}
+	        return rankingDocuments;
 	    }
+
+	    public List getRankingDocuments(){
+
+			List resultDocs = null;
+
+	    	for(int query_ind = 0; query_ind<QUERY.length; query_ind++){
+
+	    		try{
+					TopDocs searchDocs = performSearch(QUERY[query_ind], 10);
+					resultDocs = getDocument(searchDocs);
+
+
+					/*for(int r=0; r<resultDocs.size(); r++){
+						System.out.println(resultDocs.get(r));
+					}*/
+				}
+				catch (IOException ioe){
+					System.out.println(ioe.getMessage());
+				}
+				catch (ParseException pe){
+					System.out.println(pe.getMessage());
+				}
+
+			}
+			return resultDocs;
+
+		}
 	    
 	    
 }
