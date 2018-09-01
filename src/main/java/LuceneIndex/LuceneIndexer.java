@@ -61,7 +61,7 @@ public class LuceneIndexer{
 	            	  System.out.println("Indexing "+ p.getParaId());
 	            	  Document doc = new Document();
 	            	  doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
-	            	  doc.add(new StringField("body", p.getTextOnly(), Field.Store.YES));
+	            	  doc.add(new TextField("body", p.getTextOnly(), Field.Store.YES));
 	            	  try {
 	            	  indexWriter.addDocument(doc);
 	            	  }catch(IOException ioe) {
