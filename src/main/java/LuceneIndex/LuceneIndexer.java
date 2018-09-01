@@ -35,9 +35,9 @@ public class LuceneIndexer{
 	   private IndexWriter indexWriter = null;
 	   private String[] mode = null;
 
-	    public IndexWriter getIndexWriter(boolean create) throws IOException {
+	    public IndexWriter getIndexWriter(String relative_path) throws IOException {
 	        if (indexWriter == null) {
-	            Directory indexDir = FSDirectory.open(Paths.get("index-directory"));
+	            Directory indexDir = FSDirectory.open(Paths.get(relative_path));
 	            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
 	            indexWriter = new IndexWriter(indexDir, config);
 	            indexWriter = parseParagraph(indexWriter);
@@ -47,8 +47,8 @@ public class LuceneIndexer{
 	   }
 	    
 	 public IndexWriter parseParagraph(IndexWriter indexWriter) {
-		 if (mode.equals("paragraphs")) {
-	            String paragraphsFile = mode[0];
+		 if (mode[0].equals("paragraphs")) {
+	            String paragraphsFile = mode[1];
 	            FileInputStream fileInputStream2 = null;
 	            try {
 	            	fileInputStream2 = new FileInputStream(new File(paragraphsFile));
@@ -58,11 +58,10 @@ public class LuceneIndexer{
 	            }
 	            for(Data.Paragraph p: DeserializeData.iterableParagraphs(fileInputStream2))
 	            {
-	            	
+	            	  System.out.println("Indexing "+ p.getParaId());
 	            	  Document doc = new Document();
 	            	  doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
-	            	   
-	            	  doc.add(new StringField("body", p.getBodies().get(0).toString(), Field.Store.YES));
+	            	  doc.add(new StringField("body", p.getTextOnly(), Field.Store.YES));
 	            	  try {
 	            	  indexWriter.addDocument(doc);
 	            	  }catch(IOException ioe) {

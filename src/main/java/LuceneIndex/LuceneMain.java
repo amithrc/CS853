@@ -1,38 +1,63 @@
 package main.java.LuceneIndex;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
-
-import edu.unh.cs.treccar_v2.Data;
-import edu.unh.cs.treccar_v2.read_data.DeserializeData;
-import main.java.LuceneSearch.LuceneSearcher;
-import java.io.IOException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.util.*;
-
+import java.io.IOException;
+import org.apache.lucene.index.IndexWriter;
 
 
 public class LuceneMain
 {
-	
-	static final String INDEX_DIRECTORY = "C:\\Users\\VaughanCoder\\CS853\\test200.v2.0\\test200\\test200-train\\train.pages.cbor-paragraphs";
- 
-	
-	public static void SimpleCase() {
-		StandardAnalyzer analyzer = new StandardAnalyzer();
-		Directory index = new RAMDirectory();
+
+	private static void  usage()
+	{
+		System.out.println("Please pass the index file absolute path");
+		System.exit(-1 );
+	}
+
+	private static boolean checkIndexExists(String dest)
+	{
+		File temp= new File(dest);
+		if(temp.isDirectory() && temp.exists())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 
 	}
-	
-	 public static void usage() {
-	        System.out.println("Command line parameters: (pages|outlines|paragraphs) FILE");
-	        System.exit(-1);
-	    }
-	
-    public static void main(String[] args)throws Exception
-    {	
-    }
+
+	public static void main(String[] args) throws IOException
+	{
+		String dest;
+		System.out.println("Please pass the file to be indexed");
+		if( args.length < 1 )
+		{
+			usage();
+		}
+		else
+		{
+			dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
+			if(checkIndexExists(dest))
+			{
+				System.out.println("Files already indexed, proceeding");
+				LuceneConstants.setDirectoryName(dest);
+			}
+			else
+			{
+				String[] mode_input = new String[] {"paragraphs", args[0]};
+				LuceneConstants.setIndexFileName(args[0]);
+				LuceneConstants.setDirectoryName(dest);
+				LuceneIndexer l = new LuceneIndexer();
+				l.setMode(mode_input);
+				l.getIndexWriter(dest);
+				l.closeIndexWriter();
+
+			}
+
+		}
+
+	}
+
 }
