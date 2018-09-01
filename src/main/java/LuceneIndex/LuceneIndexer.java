@@ -25,7 +25,8 @@ import java.io.FileNotFoundException;
  * @author Team 3!
  *
  */
-public class LuceneIndexer{
+public class LuceneIndexer
+{
 	
 	   
 	   private IndexWriter indexWriter = null;
@@ -42,6 +43,7 @@ public class LuceneIndexer{
 	        if (indexWriter == null) {
 	            Directory indexDir = FSDirectory.open(Paths.get(relative_path));
 	            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+	            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 	            indexWriter = new IndexWriter(indexDir, config);
 	            indexWriter = parseParagraph(indexWriter);
 	           
@@ -61,7 +63,7 @@ public class LuceneIndexer{
 	            try {
 	            	fileInputStream2 = new FileInputStream(new File(paragraphsFile));
 	            }catch(FileNotFoundException fnf) {
-	            	System.out.println(fnf);
+	            	System.out.println(fnf.getMessage());
 	     
 	            }
 	            for(Data.Paragraph p: DeserializeData.iterableParagraphs(fileInputStream2))
@@ -97,7 +99,8 @@ public class LuceneIndexer{
 	     * Sets the corpus for the index writer
 	     * @param input
 	     */
-	   public void setMode(String[] input) {
+	   public void setMode(String[] input)
+	   {
 	    	mode = input;
 	   }
 	
