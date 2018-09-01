@@ -19,30 +19,37 @@ import java.util.*;
 
 public class LuceneMain
 {
-	
-	//static final String INDEX_DIRECTORY = "C:\\Users\\VaughanCoder\\CS853\\test200.v2.0\\test200\\test200-train\\train.pages.cbor-paragraphs";
- 
-	
-	public static void SimpleCase() {
-		StandardAnalyzer analyzer = new StandardAnalyzer();
-		Directory index = new RAMDirectory();
-
+	private static void  usage()
+	{
+		System.out.println("Please pass the index file absolute path");
+		System.exit(-1 );
 	}
-	
-	 public static void usage() {
-	        System.out.println("Command line parameters: (pages|outlines|paragraphs) FILE");
-	        System.exit(-1);
-	    }
-	
-    public static void main(String[] args)throws Exception
-    {
-		LuceneIndexer index = new LuceneIndexer();
-		String[] mode_input = new String[] {"paragraphs",
-				"/home/poojaoza/Documents/projects/train.test200.cbor.paragraphs"};
-		index.setMode(mode_input);
-		index.getIndexWriter();
-		index.closeIndexWriter();
-        LuceneSearcher searcher = new LuceneSearcher();
-        searcher.getRankingDocuments();
-    }
+
+	public static void main(String[] args) throws IOException
+	{
+		String dest;
+		System.out.println("Please pass the file to be indexed");
+		if( args.length < 1 )
+		{
+			usage();
+		}
+		else
+		{
+				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
+				String[] mode_input = new String[] {"paragraphs", args[0]};
+				LuceneConstants.setIndexFileName(args[0]);
+				LuceneConstants.setDirectoryName(dest);
+				LuceneIndexer l = new LuceneIndexer();
+				l.setMode(mode_input);
+				l.getIndexWriter(dest);
+				l.closeIndexWriter();
+                LuceneSearcher searcher = new LuceneSearcher();
+                searcher.getRankingDocuments();
+
+
+		}
+
+		}
+
 }
+

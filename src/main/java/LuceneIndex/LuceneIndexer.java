@@ -1,24 +1,16 @@
 package main.java.LuceneIndex;
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
+
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.Version;
-import org.apache.lucene.document.StringField;
+
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import edu.unh.cs.treccar_v2.Data;
 
@@ -27,18 +19,31 @@ import java.nio.file.Paths;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
-class LuceneIndexer{
-	
+/**
+ * Creates the index for the given corpus
+ * @author Team 3!
+ *
+ */
+class LuceneIndexer
+{
+
+
 	   private IndexWriter indexWriter = null;
 	   private String[] mode = null;
 
-	   IndexWriter getIndexWriter() throws IOException {
+	   /**
+	    * Prepares the indexwriter for use in searching later
+	    * @param relative_path
+	    * @return gets indexwriter, if it has previously been created it will return the old index writer
+	    * 		 if its hasn't been created we parse the paragraph and pass back
+	    * @throws IOException
+	    */
+	    IndexWriter getIndexWriter(String relative_path) throws IOException {
 	        if (indexWriter == null) {
-	            Directory indexDir = FSDirectory.open(Paths.get("index-directory"));
+	            Directory indexDir = FSDirectory.open(Paths.get(relative_path));
 	            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+	            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 	            indexWriter = new IndexWriter(indexDir, config);
 	            indexWriter = parseParagraph(indexWriter);
 	           
@@ -46,6 +51,11 @@ class LuceneIndexer{
 	        return indexWriter;
 	   }
 	    
+	 /**
+	  * Actually parses the paragraph from the mode parameters
+	  * @param indexWriter generated indexwriter to add doc to
+	  * @return indexwriter with docs added
+	  */
 	 private IndexWriter parseParagraph(IndexWriter indexWriter) {
 		 if (mode[0].equals("paragraphs")) {
 	            String paragraphsFile = mode[1];
@@ -53,20 +63,20 @@ class LuceneIndexer{
 	            try {
 	            	fileInputStream2 = new FileInputStream(new File(paragraphsFile));
 	            }catch(FileNotFoundException fnf) {
-	            	System.out.println(fnf);
+	            	System.out.println(fnf.getMessage());
 	     
 	            }
 	            for(Data.Paragraph p: DeserializeData.iterableParagraphs(fileInputStream2))
 	            {
-	            	
+	            	  System.out.println("Indexing "+ p.getParaId());
 	            	  Document doc = new Document();
 	            	  doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
-	            	  doc.add(new TextField("body", p.getTextOnly().toLowerCase(), Field.Store.YES));
+	            	  doc.add(new TextField("body", p.getTextOnly(), Field.Store.YES));
 	            	  try {
 	            	  indexWriter.addDocument(doc);
 	            	  }catch(IOException ioe) {
-                          System.out.println(ioe.getMessage());
-                      }
+	            		  System.out.println(ioe.getMessage());
+	            	  }
 	            }
 	            
 		 }
@@ -74,13 +84,22 @@ class LuceneIndexer{
 		 
 	 }
 
+	 /**
+	  * Closes the indexwriter so that we can use it in searching
+	  * @throws IOException
+	  */
 	 void closeIndexWriter() throws IOException {
 	        if (indexWriter != null) {
 	            indexWriter.close();
 	        }
 	   }
-
-	   void setMode(String[] input) {
+	
+	    /**
+	     * Sets the corpus for the index writer
+	     * @param input
+	     */
+	   void setMode(String[] input)
+	   {
 	    	mode = input;
 	   }
 	
