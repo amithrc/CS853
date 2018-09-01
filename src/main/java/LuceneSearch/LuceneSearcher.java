@@ -19,11 +19,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import main.java.LuceneIndex.LuceneConstants;
+
 
 public class LuceneSearcher
 {
 	
-	private final String INDEX_DIRECTORY = "index-directory";
 	private final String[] QUERY = {"power nap benefits",
 			"whale vocalization production of sound",
 			"pokemon puzzle league"};
@@ -35,7 +36,7 @@ public class LuceneSearcher
 
 	    /** Creates a new instance of SearchEngine */
 	    public LuceneSearcher() throws IOException {
-	        searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(INDEX_DIRECTORY))));
+	        searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME))));
 	        SimilarityBase sb = new SimilarityBase() {
 				@Override
 				protected float score(BasicStats basicStats, float v, float v1) {
