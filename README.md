@@ -14,9 +14,10 @@ Version **7.4.0**
 
 maven
 
-Linux Distros Debian based can get from the repo.
-
+Linux Distros Debian based can get maven from the repo.
+```
 apt-get update && apt-get install maven
+```
 
 Windows users, please use the below link to get maven up and running
 
@@ -49,3 +50,13 @@ export PATH=$PATH:$JAVA_HOME/bin
 ```
 
 Windows you need to set the JAVA_HOME appropriately 
+
+# Executing program
+
+mvn package created the executable jar with dependencies in the target directory.  File name does says it is jar with dependencies. You can pass the filename to the jar as an argument, this should create the index and call the search methods.
+
+```
+mvn package
+```
+
+
