@@ -40,11 +40,21 @@ class LuceneIndexer
 	    * @throws IOException
 	    */
 	    IndexWriter getIndexWriter(String relative_path) throws IOException {
+	    	
+	    	//If we haven't created and indexwriter yet
 	        if (indexWriter == null) {
+	        	
+	        	//Get the path of the index
 	            Directory indexDir = FSDirectory.open(Paths.get(relative_path));
+	            
+	            //Create the configuration for the index
 	            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
 	            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+	            
+	            //Create the IndexWriter
 	            indexWriter = new IndexWriter(indexDir, config);
+	            
+	            //Parse the paragraphs and return the indexwriter with the corpus indexed
 	            indexWriter = parseParagraph(indexWriter);
 	           
 	        }
@@ -57,8 +67,14 @@ class LuceneIndexer
 	  * @return indexwriter with docs added
 	  */
 	 private IndexWriter parseParagraph(IndexWriter indexWriter) {
+		 
+		 //Preparation for future changes based on trec-car github examples
 		 if (mode[0].equals("paragraphs")) {
+			 
+			 //We added the paragraphs in the main so that we can process
 	            String paragraphsFile = mode[1];
+	            
+	            //We are trying to process the input from the fileinputstream
 	            FileInputStream fileInputStream2 = null;
 	            try {
 	            	fileInputStream2 = new FileInputStream(new File(paragraphsFile));
@@ -66,20 +82,29 @@ class LuceneIndexer
 	            	System.out.println(fnf.getMessage());
 	     
 	            }
+	            
+	            //For each of the paragraphs from the deserialized inputstream
 	            for(Data.Paragraph p: DeserializeData.iterableParagraphs(fileInputStream2))
 	            {
+	            	
+	            	//We create a document
 	            	  System.out.println("Indexing "+ p.getParaId());
 	            	  Document doc = new Document();
+	            	  
+	            	  //Then we add the paragraph id and the paragraph body for searching
 	            	  doc.add(new StringField("id", p.getParaId(), Field.Store.YES));
 	            	  doc.add(new TextField("body", p.getTextOnly(), Field.Store.YES));
+	            	  
+	            	  //From here we add the document to the indexwriter
 	            	  try {
-	            	  indexWriter.addDocument(doc);
+	            		  indexWriter.addDocument(doc);
 	            	  }catch(IOException ioe) {
 	            		  System.out.println(ioe.getMessage());
 	            	  }
 	            }
 	            
 		 }
+		 //we return the indexwriter with the paragraphs added
 		 return indexWriter;
 		 
 	 }
