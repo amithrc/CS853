@@ -26,7 +26,7 @@ function change_path_target()
 
 if [ $# -ne 1 ]
 then 
-	echo "Please pass the file name as the argument "
+	usage
 else
 	echo "File passed is $1"
 	echo " "
