@@ -59,4 +59,9 @@ mvn package created the executable jar with dependencies in the target directory
 mvn package
 ```
 
+#Build Script
 
+Run the ./install.sh with absolute path
+```
+./install.sh <absolute_path_to_CBOR>
+```
