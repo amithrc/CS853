@@ -38,7 +38,7 @@ public class LuceneMain
 		}
 		else
 		{
-
+				/*
 				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
 				String[] mode_input = new String[] {"paragraphs", args[0]};
 				
@@ -65,11 +65,32 @@ public class LuceneMain
 				//Run advanced search
                 LuceneSearcher customSearcher = new LuceneSearcher(true);
                 customSearcher.getRankingDocuments();
-
-			    String file = "C:\\Users\\amith\\Downloads\\test200.v2.0.tar\\test200.v2.0\\test200\\test200-train\\train.pages.cbor-outlines.cbor";
+                */
+                
+			    String file = "C:\\Users\\VaughanCoder\\GitWorkspace\\CS853Docs\\test200.v2.0\\test200\\test200-train\\train.pages.cbor-outlines.cbor";
 				Map<String,String> p =LuceneUtil.readQrel(file);
-
-
+				
+				String[] mode_input = new String[] {"paragraphs", args[0]};
+				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
+				
+				//Sets the file directory that the corpus is coming from
+				LuceneConstants.setIndexFileName(args[0]);
+				LuceneConstants.setDirectoryName(dest);
+				
+				//Create the new lucene Index
+				LuceneIndexer l = new LuceneIndexer();
+				l.setMode(mode_input);
+				l.getIndexWriter(dest);
+				l.closeIndexWriter();
+				
+				 //Run basic search
+                LuceneSearcher basicSearcher = new LuceneSearcher(false);
+                basicSearcher.writeRankings(p);
+				
+				//Run advanced search
+                LuceneSearcher customSearcher = new LuceneSearcher(true);
+                customSearcher.writeRankings(p);
+                
 
 
 
