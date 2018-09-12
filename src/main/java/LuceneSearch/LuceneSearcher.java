@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 import main.java.LuceneIndex.LuceneConstants;
 
 /**
@@ -25,6 +25,7 @@ import main.java.LuceneIndex.LuceneConstants;
  * @author Pooja
  * @LastMod Vaughan - 9/2 Just adding comments
  */
+
 public class LuceneSearcher
 {
 	//The hard coded queries
@@ -163,4 +164,23 @@ public class LuceneSearcher
 				return null;
 			}
 		};
+
+	    public void writeRankings(Map<String,String> p,int var)
+		{
+			for(Map.Entry<String,String> m:p.entrySet())
+			{
+				try {
+					System.out.println(m.getValue());
+					TopDocs temp = this.performSearch(m.getValue(), 100);
+				}catch (ParseException e)
+				{
+					System.out.println(e.getMessage());
+				}
+				catch (IOException e)
+				{
+					System.out.println(e.getMessage());
+				}
+
+			}
+		}
 }

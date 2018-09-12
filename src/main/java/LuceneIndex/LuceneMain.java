@@ -4,6 +4,8 @@ import main.java.LuceneIndex.LuceneIndexer;
 import main.java.LuceneSearch.LuceneSearcher;
 
 import java.io.IOException;
+import main.java.util.LuceneUtil;
+import java.util.Map;
 
 /**
  * Main Class to handle the running of the method
@@ -36,6 +38,7 @@ public class LuceneMain
 		}
 		else
 		{
+
 				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
 				String[] mode_input = new String[] {"paragraphs", args[0]};
 				
@@ -62,8 +65,11 @@ public class LuceneMain
 				//Run advanced search
                 LuceneSearcher customSearcher = new LuceneSearcher(true);
                 customSearcher.getRankingDocuments();
-                
-                
+
+			    String file = "C:\\Users\\amith\\Downloads\\test200.v2.0.tar\\test200.v2.0\\test200\\test200-train\\train.pages.cbor-outlines.cbor";
+				Map<String,String> p =LuceneUtil.readQrel(file);
+
+
 
 
 
