@@ -1,60 +1,81 @@
 package main.java.LuceneIndex;
 
-import java.io.File;
+import main.java.LuceneIndex.LuceneIndexer;
+import main.java.LuceneSearch.LuceneSearcher;
+
 import java.io.IOException;
-import org.apache.lucene.index.IndexWriter;
+import main.java.util.LuceneUtil;
+import java.util.Map;
 
-
+/**
+ * Main Class to handle the running of the method
+ * @author Team 3
+ *
+ */
 public class LuceneMain
 {
+	/**
+	 * Lets user know they did not use the correct file path
+	 */
+	private static void  usage()
+	{
+		System.out.println("Please pass the index file absolute path");
+		System.exit(-1 );
+	}
 
-    private static void  usage()
-    {
-        System.out.println("Please pass the index file absolute path");
-        System.exit(-1 );
-    }
+	/**
+	 * Run the queries
+	 * @param args file path for the corpus
+	 * @throws IOException if things go wrong
+	 */
+	public static void main(String[] args) throws IOException
+	{
+		String dest;
+		System.out.println("Please pass the file to be indexed");
+		if( args.length < 1 )
+		{
+			usage();
+		}
+		else
+		{
 
-    private static boolean checkIndexExists(String dest)
-    {
-        File temp= new File(dest);
-        if(temp.isDirectory() && temp.exists())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
+				String[] mode_input = new String[] {"paragraphs", args[0]};
+				
+				//Sets the file directory that the corpus is coming from
+				LuceneConstants.setIndexFileName(args[0]);
+				LuceneConstants.setDirectoryName(dest);
+				
+				//Create the new lucene Index
+				LuceneIndexer l = new LuceneIndexer();
+				l.setMode(mode_input);
+				l.getIndexWriter(dest);
+				l.closeIndexWriter();
+				
+				System.out.println();
+                System.out.println("Starting the basic search...");
+                
+                //Run basic search
+                LuceneSearcher basicSearcher = new LuceneSearcher(false);
+                basicSearcher.getRankingDocuments();
+                
+                System.out.println();
+				System.out.println("Starting the Custom search...");
+				
+				//Run advanced search
+                LuceneSearcher customSearcher = new LuceneSearcher(true);
+                customSearcher.getRankingDocuments();
 
-    }
-
-    public static void main(String[] args) throws IOException
-    {
-        String dest;
-        System.out.println("Please pass the file to be indexed");
-        if( args.length < 1 )
-        {
-            usage();
-        }
-        else
-        {
-            dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
-            if(checkIndexExists(dest))
-            {
-                System.out.println("Files already indexed, proceeding");
-            }
-            else
-            {
-                LuceneConstants.setIndexFileName(args[0]);
-                LuceneConstants.setDirectoryName(dest);
-                LuceneIndexer l = new LuceneIndexer();
-                IndexWriter i = l.createIndex(LuceneConstants.DIRECTORY_NAME);
-                l.writeIndex(i);
-            }
-
-        }
+			    String file = "C:\\Users\\amith\\Downloads\\test200.v2.0.tar\\test200.v2.0\\test200\\test200-train\\train.pages.cbor-outlines.cbor";
+				Map<String,String> p =LuceneUtil.readQrel(file);
 
 
-    }
+
+
+
+		}
+
+		}
 
 }
+
