@@ -24,7 +24,7 @@ Windows users, please use the below link to get maven up and running
 https://www.mkyong.com/maven/how-to-install-maven-in-windows/
 
 
-# How to Run it?
+# How to Run it? (Contributor Note)
 
 * git clone https://github.com/amithrc/CS853.git  
 * mvn compile --> Compiles the code  
@@ -61,7 +61,12 @@ mvn package
 
 # Build Script
 
-Run the ***./install.sh*** with absolute path
+Run the ***./install.sh*** with absolute path to the paragraph CBOR file. Program creates the indexed_file directory within the CS853 directory.
+
+Please run git clone https://github.com/amithrc/CS853.git
+cd CS853
+Run the below Installtion script.
 ```
 ./install.sh <absolute_path_to_CBOR>
 ```
+
