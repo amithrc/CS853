@@ -2,6 +2,7 @@ package main.java.LuceneIndex;
 
 import main.java.LuceneIndex.LuceneIndexer;
 import main.java.LuceneSearch.LuceneSearcher;
+import main.java.EvaluationMeasures.EvaluationMeasures;
 
 import java.io.IOException;
 import main.java.util.LuceneUtil;
@@ -67,7 +68,7 @@ public class LuceneMain
                 customSearcher.getRankingDocuments();
                 */
 
-			    String file = "C:\\Users\\VaughanCoder\\GitWorkspace\\CS853Docs\\test200.v2.0\\test200\\test200-train\\train.pages.cbor-outlines.cbor";
+			    String file = "/home/poojaoza/Documents/projects/train.pages.cbor-outlines.cbor";
 				Map<String,String> p =LuceneUtil.readQrel(file);
 
 				String[] mode_input = new String[] {"paragraphs", args[0]};
@@ -93,21 +94,18 @@ public class LuceneMain
 
 
 
-  		String path="C:\\Users\\amith\\Downloads\\test200.v2.0.tar\\test200.v2.0\\test200\\test200-train\\train.pages.cbor-article.qrels";
+  		        String path="/home/poojaoza/Documents/projects/train.pages.cbor-article.qrels";
 
-			Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(path);
-			System.out.println(LuceneUtil.relevancy_count(qrel,"enwiki:Zang-fu"));
+			    Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(path);
+			    System.out.println(LuceneUtil.relevancy_count(qrel,"enwiki:Zang-fu"));
 
-
-
-
-
-
+				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
+                measures_obj.calculateMeanAvgPrecision();
 
 
 		}
 
-		}
+	}
 
 }
 

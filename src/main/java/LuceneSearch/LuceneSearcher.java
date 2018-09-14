@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import main.java.LuceneIndex.LuceneConstants;
@@ -160,6 +161,22 @@ public class LuceneSearcher
 			return resultDocs;
 
 		}
+
+		private void createRankingQueryDocPair(String outer_key, String inner_key, Integer relevancy)
+		{
+			if(LuceneConstants.queryDocPair.containsKey(outer_key))
+			{
+				Map<String, Integer> extract = LuceneConstants.queryDocPair.get(outer_key);
+				extract.put(inner_key, relevancy);
+			}
+			else
+			{
+
+				Map<String,Integer> temp = new HashMap<String, Integer>();
+				temp.put(inner_key, relevancy);
+				LuceneConstants.queryDocPair.put(outer_key,temp);
+			}
+		}
 	    
 	    
 	    /**
@@ -169,6 +186,8 @@ public class LuceneSearcher
 	    	    throws IOException {
 	    	
 	    	List<String> rankings = new ArrayList<String>();
+
+
 	    	for(int ind=0; ind<scoreDocs.length; ind++){
 
 				//Get the scoring document
@@ -184,7 +203,7 @@ public class LuceneSearcher
 				//String paraBody = rankedDoc.getField("body").stringValue();
 				String paraRank = String.valueOf(ind+1);
 				rankings.add(queryId + " Q0 " + paraId + " " + paraRank + " " + docScore + " "+teamName + "-" + methodName);
-
+				createRankingQueryDocPair(queryId, paraId, Integer.valueOf(paraRank));
 			}
 	    	
 	    	
