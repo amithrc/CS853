@@ -1,5 +1,6 @@
 package main.java.EvaluationMeasures;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import main.java.LuceneIndex.LuceneConstants;
@@ -7,8 +8,8 @@ import main.java.util.LuceneUtil;
 
 public class EvaluationMeasures{
 
-    public Map<String,Map<String,Integer>> qrel_data;
-    private Map<String, Double> mean_avg_precison;
+    public Map<String,Map<String,Integer>> qrel_data = new HashMap<String, Map<String, Integer>>();
+    private Map<String, Double> mean_avg_precison = new HashMap<String, Double>();
 
     public EvaluationMeasures(Map<String,Map<String,Integer>> qrel){
         qrel_data = qrel;
@@ -16,8 +17,8 @@ public class EvaluationMeasures{
     }
 
     private int getQrelRelevancy(String query_id, String doc_id){
-        if(LuceneConstants.queryDocPair.containsKey(query_id)){
-            Map<String,Integer> temp = LuceneConstants.queryDocPair.get(query_id);
+        if(qrel_data.containsKey(query_id)){
+            Map<String,Integer> temp = qrel_data.get(query_id);
             if(temp.containsKey(doc_id)){
                 return temp.get(doc_id);
             }
@@ -44,7 +45,7 @@ public class EvaluationMeasures{
                 }
 
             }
-            Integer rel_docs_count = LuceneUtil.relevancy_count(LuceneConstants.queryDocPair, queryId);
+            Integer rel_docs_count = LuceneUtil.relevancy_count(qrel_data, queryId);
             if(rel_docs_count == 0){
                 avg_precision = 0.0;
             }else{
@@ -55,6 +56,7 @@ public class EvaluationMeasures{
     }
 
     public double calculateMeanAvgPrecision(){
+        getAvgPrecision();
         Double MAP = 0.0;
         Double totalAP = 0.0;
         for (Map.Entry<String, Double> avgPrec : mean_avg_precison.entrySet()){
