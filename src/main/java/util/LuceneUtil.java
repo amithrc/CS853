@@ -102,26 +102,6 @@ public class LuceneUtil
             }
 
         }
-
-        /*for (Map.Entry<String, Map<String,Integer>> item : mp.entrySet())
-        {
-            String outkey = item.getKey();
-            Map<String,Integer> temp= item.getValue();
-
-            System.out.println(outkey);
-            for(Map.Entry<String,Integer> inside: temp.entrySet())
-            {
-                System.out.println(inside.getKey()+"  "+ inside.getValue());
-            }
-            System.out.println("-----------------------------------------------");
-
-        }
-
-        System.out.println(relevancy_count(mp,"enwiki:Activity%20theory"));
-
-        */
-
-
         return mp;
 
     }
