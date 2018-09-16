@@ -34,15 +34,19 @@ public class EvaluationMeasures{
 
             String queryId = query.getKey();
             Map<String,Integer> docIdRank= query.getValue();
-            Integer query_count = 0;
-            Integer ranking_rel_count = 0;
-            Double avg_precision = 0.0;
+            int query_count = 0;
+            int ranking_rel_count = 0;
+            double avg_precision = 0.0;
 
             for(Map.Entry<String,Integer> document: docIdRank.entrySet()){
-                query_count = query_count + 1;
+                query_count = query_count + 1; //paragraphs present for each query i.e. total documents for a query
                 if(getQrelRelevancy(queryId, document.getKey()) == 1){
-                    ranking_rel_count = ranking_rel_count + 1;
-                    avg_precision = avg_precision + (ranking_rel_count/query_count);
+                    ranking_rel_count = ranking_rel_count + 1; //how many documents are relevant
+                    double denominator = (double) ranking_rel_count/query_count;
+                    //System.out.println(queryId+' '+denominator+' '+avg_precision);
+                    avg_precision = avg_precision + denominator;
+
+                    //System.out.println(queryId+' '+document.getKey()+' '+query_count+' '+ranking_rel_count+' '+avg_precision);
                 }
 
             }
@@ -51,7 +55,9 @@ public class EvaluationMeasures{
                 avg_precision = 0.0;
             }else{
                 avg_precision = avg_precision/rel_docs_count;
+                //System.out.println(queryId+' '+avg_precision+' '+rel_docs_count);
             }
+            System.out.println(queryId+' '+avg_precision);
             mean_avg_precison.put(queryId, avg_precision);
         }
     }
@@ -59,15 +65,17 @@ public class EvaluationMeasures{
     public double calculateMeanAvgPrecision()
     {
         getAvgPrecision();
-        Double MAP = 0.0;
-        Double totalAP = 0.0;
+        double MAP = 0.0;
+        double totalAP = 0.0;
         for (Map.Entry<String, Double> avgPrec : mean_avg_precison.entrySet()){
+            //System.out.println(avgPrec.getValue());
             totalAP = totalAP + avgPrec.getValue();
         }
         Integer total_size = mean_avg_precison.size();
         if(total_size != 0){
             MAP = totalAP/total_size;
         }
+        System.out.println("MAP"+' '+MAP);
         return MAP;
 
     }
@@ -132,10 +140,8 @@ public class EvaluationMeasures{
             {
                 System.out.println(e.getMessage());
             }
-//            System.out.println(" Query = "+ QueryID + " Relevant count = " +is_relevant_counter + " Actual number of count ="+ relevant_count + " Result = "+ res) ;
-//            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------");
+            //System.out.println(" Query = "+ QueryID + " Relevant count = " +is_relevant_counter + " Actual number of count ="+ relevant_count + " Result = "+ res) ;
         }
-        //System.out.println("P@R across Queries = "+ (pATr/number_of_query_processed));
         return (pATr/number_of_query_processed);
     }
 
