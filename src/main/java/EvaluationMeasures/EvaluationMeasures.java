@@ -110,7 +110,7 @@ public class EvaluationMeasures{
         for(Map.Entry<String,Integer> document: docIdRank.entrySet()){
             if(counter <= ITERATIONS){
                 if((grade = getQrelRelevancy(queryId, document.getKey())) == 1){
-                    IDCG += (Math.pow(2, grade)) / (Math.log(++counter));
+                    IDCG += (Math.pow(2, grade)) / (Math.log(counter + 1));
                 }
             } else break;
         }
