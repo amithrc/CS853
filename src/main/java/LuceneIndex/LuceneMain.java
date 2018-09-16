@@ -20,7 +20,9 @@ public class LuceneMain
 	 */
 	private static void  usage()
 	{
-		System.out.println("Please pass the index file absolute path");
+		System.out.println("args[0] --> Paragraph CBOR Absolute Path");
+		System.out.println("args[1] --> Outlines CBOR Absolute Path");
+		System.out.println("args[2] --> Article  Qrel Absolute Path");
 		System.exit(-1 );
 	}
 
@@ -29,6 +31,7 @@ public class LuceneMain
 	 * @param args file path for the corpus
 	 * @throws IOException if things go wrong
 	 */
+
 	public static void main(String[] args) throws IOException
 	{
 		String dest;
@@ -39,42 +42,7 @@ public class LuceneMain
 		}
 		else
 		{
-				/*
-				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
 				String[] mode_input = new String[] {"paragraphs", args[0]};
-				
-				//Sets the file directory that the corpus is coming from
-				LuceneConstants.setIndexFileName(args[0]);
-				LuceneConstants.setDirectoryName(dest);
-				
-				//Create the new lucene Index
-				LuceneIndexer l = new LuceneIndexer();
-				l.setMode(mode_input);
-				l.getIndexWriter(dest);
-				l.closeIndexWriter();
-				
-				System.out.println();
-                System.out.println("Starting the basic search...");
-                
-                //Run basic search
-                LuceneSearcher basicSearcher = new LuceneSearcher(false);
-                basicSearcher.getRankingDocuments();
-                
-                System.out.println();
-				System.out.println("Starting the Custom search...");
-				
-				//Run advanced search
-                LuceneSearcher customSearcher = new LuceneSearcher(true);
-                customSearcher.getRankingDocuments();
-                */
-
-				//args[0] --> Paragraph file index
-				//args[1] --> Outlines CBOR file
-				//args[2] --> Article Qrels
-
-
-				String[] mode_input = new String[] {"paragraphs", args[0]};
-
 				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
 
 				//Sets the file directory that the corpus is coming from

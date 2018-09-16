@@ -85,7 +85,6 @@ public class EvaluationMeasures{
         {
             // To have the Precision @ R Computed for each Query.
             double res =0.0;
-
             //Getting the Key
             String QueryID = Query.getKey();
 
@@ -95,34 +94,27 @@ public class EvaluationMeasures{
             //Getting the Relevant count from the Ground Truth
             int relevant_count = LuceneUtil.relevancy_count(qrel_data,QueryID);
 
-
             //Inner value which holds the Para_ID
             Map<String,Integer> para_id = Query.getValue();
 
             //Number of ParaID
             int number_of_para_id = para_id.size();
 
-
             //Variable to Break the inner loop when it reaches the Relevant_count
             int BreakLoop=(number_of_para_id > relevant_count ) ? relevant_count: number_of_para_id;
-
 
             // Keep the current Iteration
 
             int counter =0;
             int is_relevant_counter = 0;
 
-
             for(Map.Entry<String,Integer> P_ID: para_id.entrySet())
             {
-
-
                 if(getQrelRelevancy(QueryID,P_ID.getKey()) == 1)
                 {
                     is_relevant_counter += 1;
 
                 }
-
                 counter+=1;
 
                 if(counter == BreakLoop)
