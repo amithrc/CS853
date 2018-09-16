@@ -1,18 +1,17 @@
 package main.java.util;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import edu.unh.cs.treccar_v2.Data;
-
 import java.io.*;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import java.util.Map;
 
 
 public class LuceneUtil
 {
-    static public Map<String, String> readQrel(String filename)
+    static public Map<String, String> readOutline(String filename)
     {
-        Map<String,String> data = new HashMap<String,String>();
+        Map<String,String> data = new LinkedHashMap<String,String>();
 
         FileInputStream qrelStream = null;
         try {
@@ -27,9 +26,8 @@ public class LuceneUtil
         return data;
     }
 
-    public static int relevancy_count(Map<String,Map<String,Integer>> m , String query_id)
+    public static int relevancy_count(Map<String,Map<String,Integer>> m, String query_id)
     {
-
         if(m.containsKey(query_id))
         {
             Map<String,Integer> temp = m.get(query_id);
@@ -42,9 +40,10 @@ public class LuceneUtil
 
     }
 
+    /*O*/
     static public Map<String,Map<String,Integer>> createQrelMap(String filename)
     {
-        Map<String,Map<String,Integer>> mp = new HashMap<String, Map<String, Integer>>();
+        Map<String,Map<String,Integer>> mp = new LinkedHashMap<String, Map<String, Integer>>();
 
         File fp= new File(filename);
         FileReader fr;
@@ -87,7 +86,7 @@ public class LuceneUtil
 
                     String inner_key = words[2];
                     Integer is_relevant= new Integer(words[3]);
-                    Map<String,Integer> temp = new HashMap<String, Integer>();
+                    Map<String,Integer> temp = new LinkedHashMap<String, Integer>();
                     temp.put(inner_key,is_relevant);
                     mp.put(outKey,temp);
                 }
@@ -103,6 +102,22 @@ public class LuceneUtil
 
         }
         return mp;
+
+    }
+
+    static public void Display(Map<String,Map<String,Integer>> q)
+    {
+        for (Map.Entry<String, Map<String,Integer>> Query : q.entrySet())
+        {
+
+            for (Map.Entry<String,Integer> p: Query.getValue().entrySet())
+            {
+                System.out.println(Query.getKey()+","+p.getKey());
+
+            }
+            System.out.println("----------------------------------------------------------------------------------------------------");
+
+        }
 
     }
 

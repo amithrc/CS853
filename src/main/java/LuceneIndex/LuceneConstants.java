@@ -1,13 +1,17 @@
 package main.java.LuceneIndex;
 
-import java.util.HashMap;
+
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class LuceneConstants
 {
     public static String FILE_NAME="";
     public static String DIRECTORY_NAME="";
-    public static Map<String, Map<String,Integer>> queryDocPair = new HashMap<String, Map<String, Integer>>();
+    public static Map<String, Map<String,Integer>> queryDocPair = new LinkedHashMap<String, Map<String, Integer>>();
+
+    public static String OUTLINE_CBOR="";
+    public static String QREL_PATH="";
 
     public static String getIndexFileName()
     {
@@ -22,4 +26,11 @@ public class LuceneConstants
     {
         DIRECTORY_NAME= d;
     }
+    public static void setOutlineCbor(String d)
+    {
+        OUTLINE_CBOR= d;
+    }
+    public static void setQrelPath(String d){ QREL_PATH=d;}
+
+
 }

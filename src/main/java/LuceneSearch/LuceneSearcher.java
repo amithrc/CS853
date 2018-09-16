@@ -162,6 +162,10 @@ public class LuceneSearcher
 
 		}
 
+		// outerkey-->Query ID
+		//Inner rkey -->paraID
+
+
 		private void createRankingQueryDocPair(String outer_key, String inner_key, Integer rank)
 		{
 			if(LuceneConstants.queryDocPair.containsKey(outer_key))

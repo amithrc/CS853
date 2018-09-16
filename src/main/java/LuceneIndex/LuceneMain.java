@@ -68,40 +68,54 @@ public class LuceneMain
                 customSearcher.getRankingDocuments();
                 */
 
-			    String file = "/home/poojaoza/Documents/projects/train.pages.cbor-outlines.cbor";
-				Map<String,String> p =LuceneUtil.readQrel(file);
+				//args[0] --> Paragraph file index
+				//args[1] --> Outlines CBOR file
+				//args[2] --> Article Qrels
+
 
 				String[] mode_input = new String[] {"paragraphs", args[0]};
+
 				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
 
 				//Sets the file directory that the corpus is coming from
+
 				LuceneConstants.setIndexFileName(args[0]);
 				LuceneConstants.setDirectoryName(dest);
 
+				LuceneConstants.setOutlineCbor(args[1]);
+				LuceneConstants.setQrelPath(args[2]);
+
 				//Create the new lucene Index
 				LuceneIndexer l = new LuceneIndexer();
+
 				l.setMode(mode_input);
 				l.getIndexWriter(dest);
 				l.closeIndexWriter();
 
-				 //Run basic search
+
+				/* Reading outline file and it returns the PageID as the key and pageName as its value*/
+
+				Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
+
+				 /*Creates the instance of the basic search*/
                 LuceneSearcher basicSearcher = new LuceneSearcher(false);
                 basicSearcher.writeRankings(p);
 
-				//Run advanced search
+				/*Creates the instance of the Custom scoring function*/
+
                 LuceneSearcher customSearcher = new LuceneSearcher(true);
                 customSearcher.writeRankings(p);
 
+                /*Returns the Map of Ground Truth from the Qrel file
+				/*Key QueryID ParaID= InnerKey IsRelevant Value for the InnnerKey */
 
 
-  		        String path="/home/poojaoza/Documents/projects/train.pages.cbor-article.qrels";
+			      Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
 
-			    Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(path);
-			    System.out.println(LuceneUtil.relevancy_count(qrel,"enwiki:Zang-fu"));
-
-				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
-                measures_obj.calculateMeanAvgPrecision();
-
+			      //Evaluation Measure
+			      EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
+			      System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
+			      System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
 
 		}
 
