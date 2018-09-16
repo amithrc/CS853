@@ -36,7 +36,7 @@ public class LuceneMain
 	{
 		String dest;
 		System.out.println("Please pass the file to be indexed");
-		if( args.length < 1 )
+		if( args.length < 3 )
 		{
 			usage();
 		}
