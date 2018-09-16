@@ -162,18 +162,18 @@ public class LuceneSearcher
 
 		}
 
-		private void createRankingQueryDocPair(String outer_key, String inner_key, Integer relevancy)
+		private void createRankingQueryDocPair(String outer_key, String inner_key, Integer rank)
 		{
 			if(LuceneConstants.queryDocPair.containsKey(outer_key))
 			{
 				Map<String, Integer> extract = LuceneConstants.queryDocPair.get(outer_key);
-				extract.put(inner_key, relevancy);
+				extract.put(inner_key, rank);
 			}
 			else
 			{
 
 				Map<String,Integer> temp = new HashMap<String, Integer>();
-				temp.put(inner_key, relevancy);
+				temp.put(inner_key, rank);
 				LuceneConstants.queryDocPair.put(outer_key,temp);
 			}
 		}
