@@ -101,6 +101,7 @@ public class LuceneMain
 
 				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
                 measures_obj.calculateMeanAvgPrecision();
+                measures_obj.calculateNDCG();
 
 
 		}

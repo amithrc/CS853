@@ -1,5 +1,8 @@
 package main.java.EvaluationMeasures;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import main.java.LuceneIndex.LuceneConstants;
@@ -9,7 +12,7 @@ public class EvaluationMeasures{
 
     public Map<String,Map<String,Integer>> qrel_data;
     private Map<String, Double> mean_avg_precison;
-
+    private static int ITERATIONS = 20 ;
     public EvaluationMeasures(Map<String,Map<String,Integer>> qrel){
         qrel_data = qrel;
 
@@ -67,4 +70,40 @@ public class EvaluationMeasures{
         return MAP;
 
     }
+    public Iterable<Double> calculateNDCG(){
+        List<Double> NDCGList = new ArrayList<>();
+        for (Map.Entry<String, Map<String,Integer>> query : LuceneConstants.queryDocPair.entrySet()) {
+            NDCGList.add(DCG(query) / IDCG(query));
+        }
+        return NDCGList;
+    }
+    private Double DCG(Map.Entry<String, Map<String,Integer>> query){
+            int grade = 0;
+            Double DCG = 0.0;
+            String queryId = query.getKey();
+            Map<String,Integer> docIdRank= query.getValue();
+            String[] docId = docIdRank.keySet().toArray(new String[docIdRank.size()]);
+            for(int i = 1; i <= ITERATIONS; i++){
+                grade = getQrelRelevancy(queryId, docId[i]);
+                DCG += (Math.pow(2, grade)) / (Math.log(i + 1));
+            }
+            return DCG;
+        }
+
+    private double IDCG(Map.Entry<String, Map<String,Integer>> query){
+        int counter = 1;
+        int grade = 0;
+        Double IDCG = 0.0;
+        String queryId = query.getKey();
+        Map<String,Integer> docIdRank= query.getValue();
+        for(Map.Entry<String,Integer> document: docIdRank.entrySet()){
+            if(counter <= ITERATIONS){
+                if((grade = getQrelRelevancy(queryId, document.getKey())) == 1){
+                    IDCG += (Math.pow(2, grade)) / (Math.log(++counter));
+                }
+            } else break;
+        }
+        return IDCG;
+    }
+
 }
