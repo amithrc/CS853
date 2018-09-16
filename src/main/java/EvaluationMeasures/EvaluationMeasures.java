@@ -111,6 +111,7 @@ public class EvaluationMeasures{
             if(counter <= ITERATIONS){
                 if((grade = getQrelRelevancy(queryId, document.getKey())) == 1){
                     IDCG += (Math.pow(2, grade)) / (Math.log(counter + 1));
+                    counter++;
                 }
             } else break;
         }
