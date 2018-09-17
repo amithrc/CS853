@@ -47,7 +47,7 @@ public class EvaluationMeasures{
                 //check if the given paragraph document is relevant for the query or not
                 if(getQrelRelevancy(queryId, document.getKey()) == 1){
                     ranking_rel_count = ranking_rel_count + 1;
-                    avg_precision = avg_precision + (double)(ranking_rel_count/query_count);
+                    avg_precision = avg_precision + (ranking_rel_count/(double) query_count);
                 }
 
             }
