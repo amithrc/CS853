@@ -76,9 +76,9 @@ public class LuceneMain
 				Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
 
 				//Evaluation Measure
-//				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
-//				Double MAP_result = measures_obj.calculateMeanAvgPrecision();
-//				measures_obj.calculatePrecisionAtR();
+				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
+				Double MAP_result = measures_obj.calculateMeanAvgPrecision();
+				measures_obj.calculatePrecisionAtR();
 
 				LuceneConstants.queryDocPair.clear();
 

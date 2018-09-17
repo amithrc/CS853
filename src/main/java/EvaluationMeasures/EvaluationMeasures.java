@@ -30,6 +30,8 @@ public class EvaluationMeasures{
 
     private void getAvgPrecision(){
 
+
+
         for (Map.Entry<String, Map<String,Integer>> query : LuceneConstants.queryDocPair.entrySet()){
 
             String queryId = query.getKey();
@@ -43,21 +45,17 @@ public class EvaluationMeasures{
                 if(getQrelRelevancy(queryId, document.getKey()) == 1){
                     ranking_rel_count = ranking_rel_count + 1; //how many documents are relevant
                     double denominator = (double) ranking_rel_count/query_count;
-                    //System.out.println(queryId+' '+denominator+' '+avg_precision);
                     avg_precision = avg_precision + denominator;
 
-                    //System.out.println(queryId+' '+document.getKey()+' '+query_count+' '+ranking_rel_count+' '+avg_precision);
                 }
 
             }
-            Integer rel_docs_count = LuceneUtil.relevancy_count(qrel_data, queryId);
+            int rel_docs_count = LuceneUtil.relevancy_count(qrel_data, queryId);
             if(rel_docs_count == 0){
                 avg_precision = 0.0;
             }else{
                 avg_precision = avg_precision/rel_docs_count;
-                //System.out.println(queryId+' '+avg_precision+' '+rel_docs_count);
             }
-            System.out.println(queryId+' '+avg_precision);
             mean_avg_precison.put(queryId, avg_precision);
         }
     }
@@ -68,14 +66,13 @@ public class EvaluationMeasures{
         double MAP = 0.0;
         double totalAP = 0.0;
         for (Map.Entry<String, Double> avgPrec : mean_avg_precison.entrySet()){
-            //System.out.println(avgPrec.getValue());
+            System.out.println(avgPrec.getKey()+' '+avgPrec.getValue());
             totalAP = totalAP + avgPrec.getValue();
         }
-        Integer total_size = mean_avg_precison.size();
+        int total_size = mean_avg_precison.size();
         if(total_size != 0){
             MAP = totalAP/total_size;
         }
-        System.out.println("MAP"+' '+MAP);
         return MAP;
 
     }
