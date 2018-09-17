@@ -138,11 +138,14 @@ public class EvaluationMeasures {
     public Double calculateNDCG() {
         double NDCG = 0.0;
         int counter = 0;
+
         for (Map.Entry<String, Map<String, Integer>> Query : LuceneConstants.queryDocPair.entrySet()) {
             NDCG += calculateDCG(Query) / calculateIDCG(Query);
             counter++;
         }
+
         NDCG /= counter;
+
         return NDCG;
 
     }
@@ -152,29 +155,37 @@ public class EvaluationMeasures {
         int counter = 1;
         Map<String, Integer> docIDRank = Query.getValue();
         ArrayList<Integer> grades = new ArrayList<>();
+
         for (Map.Entry<String, Integer> row : docIDRank.entrySet()) {
+
             if ((getQrelRelevancy(Query.getKey(), row.getKey())) == 1) {
                 grades.add(1);
             } else grades.add(0);
+
             if (counter <= TOTAL) {
                 DCG += (Math.pow(2, grades.get(counter - 1))) / (Math.log(counter + 1));
                 counter++;
             } else break;
         }
+
         return DCG;
     }
 
     private Double calculateIDCG(Map.Entry<String, Map<String, Integer>> Query) {
+
         double IDCG = 0.0;
         int counter = 1;
         Map<String, Integer> docIDRank = Query.getValue();
         ArrayList<Integer> grades = new ArrayList<>();
+
         for (Map.Entry<String, Integer> row : docIDRank.entrySet()) {
 
             if ((getQrelRelevancy(Query.getKey(), row.getKey())) == 1) {
                 grades.add(1);
             } else grades.add(0);
+
             Collections.sort(grades, Collections.reverseOrder());
+
                 if (counter <= TOTAL) {
                     IDCG += (Math.pow(2, grades.get(counter - 1))) / (Math.log(counter + 1));
                     counter++;
