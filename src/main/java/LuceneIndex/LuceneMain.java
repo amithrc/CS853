@@ -69,21 +69,23 @@ public class LuceneMain
                 LuceneSearcher basicSearcher = new LuceneSearcher(false);
                 basicSearcher.writeRankings(p);
 
-				/*Creates the instance of the Custom scoring function*/
+			    LuceneConstants.queryDocPairRead = LuceneUtil.createQrelMap("output_standard_ranking.txt");
+				Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
+				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
 
+				System.out.println("MAP ="+ measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
+
+
+				LuceneConstants.queryDocPairRead.clear();
+
+				/*Creates the instance of the Custom scoring function*/
                 LuceneSearcher customSearcher = new LuceneSearcher(true);
                 customSearcher.writeRankings(p);
 
-                /*Returns the Map of Ground Truth from the Qrel file
-				/*Key QueryID ParaID= InnerKey IsRelevant Value for the InnnerKey */
-
-
-			      Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
-
-			      //Evaluation Measure
-			      EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
-			      System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
-			      System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
+			    LuceneConstants.queryDocPairRead = LuceneUtil.createQrelMap("output_custom_ranking.txt");
+				System.out.println("MAP ="+ measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
 
 		}
 

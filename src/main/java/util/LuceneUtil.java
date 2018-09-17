@@ -105,7 +105,7 @@ public class LuceneUtil
 
     }
 
-    static public void Display(Map<String,Map<String,Integer>> q)
+    static public void DisplayMap(Map<String,Map<String,Integer>> q)
     {
         for (Map.Entry<String, Map<String,Integer>> Query : q.entrySet())
         {
@@ -120,6 +120,4 @@ public class LuceneUtil
         }
 
     }
-
-
 }
