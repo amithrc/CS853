@@ -13,6 +13,8 @@ public class LuceneConstants
     public static String OUTLINE_CBOR="";
     public static String QREL_PATH="";
 
+    public static Map<String, Map<String,Integer>> queryDocPairRead;
+
     public static String getIndexFileName()
     {
         return FILE_NAME;

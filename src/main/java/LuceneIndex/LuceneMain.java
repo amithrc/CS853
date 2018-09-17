@@ -69,36 +69,25 @@ public class LuceneMain
                 LuceneSearcher basicSearcher = new LuceneSearcher(false);
                 basicSearcher.writeRankings(p);
 
-                /*Returns the Map of Ground Truth from the Qrel file
-				/*Key QueryID ParaID= InnerKey IsRelevant Value for the InnnerKey */
-
-
+			    LuceneConstants.queryDocPairRead = LuceneUtil.createQrelMap("output_standard_ranking.txt");
 				Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
+				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
 
-				//Evaluation Measure
-//				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
-//				Double MAP_result = measures_obj.calculateMeanAvgPrecision();
-//				measures_obj.calculatePrecisionAtR();
+				System.out.println("MAP ="+ measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
 
-				LuceneConstants.queryDocPair.clear();
+
+				LuceneConstants.queryDocPairRead.clear();
 
 				/*Creates the instance of the Custom scoring function*/
-
                 LuceneSearcher customSearcher = new LuceneSearcher(true);
                 customSearcher.writeRankings(p);
 
-                /*Returns the Map of Ground Truth from the Qrel file
-				/*Key QueryID ParaID= InnerKey IsRelevant Value for the InnnerKey */
+			    LuceneConstants.queryDocPairRead = LuceneUtil.createQrelMap("output_custom_ranking.txt");
+				System.out.println("MAP ="+ measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
+				System.out.println("NDCG_20 = " + measures_obj.calculateNDCG());
 
-
-			      //Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
-
-			      //Evaluation Measure
-			      EvaluationMeasures measures_obj_custom = new EvaluationMeasures(qrel);
-			      measures_obj_custom.calculateMeanAvgPrecision();
-			      measures_obj_custom.calculatePrecisionAtR(); 
-			      measures_obj_custom.calculateNDCG();
-			      
 		}
 
 	}

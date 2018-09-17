@@ -1,5 +1,6 @@
 package main.java.EvaluationMeasures;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class EvaluationMeasures{
 
     private void getAvgPrecision(){
 
-        for (Map.Entry<String, Map<String,Integer>> query : LuceneConstants.queryDocPair.entrySet()){
+        for (Map.Entry<String, Map<String,Integer>> query : LuceneConstants.queryDocPairRead.entrySet()){
 
             String queryId = query.getKey();
             Map<String,Integer> docIdRank= query.getValue();
@@ -39,25 +40,19 @@ public class EvaluationMeasures{
             double avg_precision = 0.0;
 
             for(Map.Entry<String,Integer> document: docIdRank.entrySet()){
-                query_count = query_count + 1; //paragraphs present for each query i.e. total documents for a query
+                query_count = query_count + 1;
                 if(getQrelRelevancy(queryId, document.getKey()) == 1){
-                    ranking_rel_count = ranking_rel_count + 1; //how many documents are relevant
-                    double denominator = (double) ranking_rel_count/query_count;
-                    //System.out.println(queryId+' '+denominator+' '+avg_precision);
-                    avg_precision = avg_precision + denominator;
-
-                    //System.out.println(queryId+' '+document.getKey()+' '+query_count+' '+ranking_rel_count+' '+avg_precision);
+                    ranking_rel_count = ranking_rel_count + 1;
+                    avg_precision = avg_precision + (double)(ranking_rel_count/query_count);
                 }
 
             }
-            Integer rel_docs_count = LuceneUtil.relevancy_count(qrel_data, queryId);
+            int rel_docs_count = LuceneUtil.relevancy_count(qrel_data, queryId);
             if(rel_docs_count == 0){
                 avg_precision = 0.0;
             }else{
                 avg_precision = avg_precision/rel_docs_count;
-                //System.out.println(queryId+' '+avg_precision+' '+rel_docs_count);
             }
-            System.out.println(queryId+' '+avg_precision);
             mean_avg_precison.put(queryId, avg_precision);
         }
     }
@@ -68,14 +63,12 @@ public class EvaluationMeasures{
         double MAP = 0.0;
         double totalAP = 0.0;
         for (Map.Entry<String, Double> avgPrec : mean_avg_precison.entrySet()){
-            //System.out.println(avgPrec.getValue());
             totalAP = totalAP + avgPrec.getValue();
         }
-        Integer total_size = mean_avg_precison.size();
+        int total_size = mean_avg_precison.size();
         if(total_size != 0){
             MAP = totalAP/total_size;
         }
-        System.out.println("MAP"+' '+MAP);
         return MAP;
 
     }
@@ -86,10 +79,10 @@ public class EvaluationMeasures{
 
         int number_of_query_processed=0;
 
-        double pATr= 0.0;
+        double pATr = 0.0;
 
 
-        for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPair.entrySet())
+        for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPairRead.entrySet())
         {
             // To have the Precision @ R Computed for each Query.
             double res =0.0;
@@ -140,11 +133,12 @@ public class EvaluationMeasures{
             {
                 System.out.println(e.getMessage());
             }
-            //System.out.println(" Query = "+ QueryID + " Relevant count = " +is_relevant_counter + " Actual number of count ="+ relevant_count + " Result = "+ res) ;
+           //  System.out.println(" Query = "+ QueryID + " Relevant count = " +is_relevant_counter + " Actual number of count ="+ relevant_count + " Result = "+ res) ;
+//            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------");
         }
+        //System.out.println("P@R across Queries = "+ (pATr/number_of_query_processed));
         return (pATr/number_of_query_processed);
     }
-    
     
 
     /**
@@ -214,5 +208,35 @@ public class EvaluationMeasures{
     		return tempndcgVal/count;
     }
     	
+    public double calcMAP()
+    {
+        double MAP=0.0;
+        for(Map.Entry<String,Map<String,Integer>> outer: LuceneConstants.queryDocPairRead.entrySet())
+        {
+            String queryID = outer.getKey();
+            int is_rel=0;
+            int para_processed_so_far=0;
+            double AP=0.0;
+            int paraC= outer.getValue().size();
+            for(Map.Entry<String,Integer> inner: outer.getValue().entrySet())
+            {
+                para_processed_so_far+=1;
+                if(getQrelRelevancy(queryID,inner.getKey())==1)
+                {
+                    is_rel+=1;
+                    double num =(double) is_rel/para_processed_so_far;
+                    AP+= num;
+
+                }
+
+            }
+            AP = AP / paraC;
+            MAP+=AP;
+            AP=0;
+        }
+        MAP = MAP /LuceneConstants.queryDocPairRead.size();
+        return MAP;
+    }
+
 
 }

@@ -182,7 +182,7 @@ public class LuceneSearcher
 			else
 			{
 
-				Map<String,Integer> temp = new HashMap<String, Integer>();
+				Map<String,Integer> temp = new HashMap<String,Integer>();
 				temp.put(inner_key, rank);
 				LuceneConstants.queryDocPair.put(outer_key,temp);
 			}
