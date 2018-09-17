@@ -177,7 +177,7 @@ public class EvaluationMeasures{
     			 
              }
     		 
-    		 System.out.println("VC - " + queryId+' '+CGVal);
+    		 //System.out.println("VC - " + queryId+' '+CGVal);
     	     return CGVal;
         }
     
@@ -200,10 +200,10 @@ public class EvaluationMeasures{
 
 		    	  tempndcgVal += dcgVal/idcgVal;
 		    	  
-		    	  System.out.println("VC - NDCG" + query.getKey()+' '+dcgVal/idcgVal);
+		    	  //System.out.println("VC - NDCG" + query.getKey()+' '+dcgVal/idcgVal);
 		    	  
 		      }
-    		System.out.println("VC - NDCG Total: " + tempndcgVal/count);
+    		//System.out.println("VC - NDCG Total: " + tempndcgVal/count);
     		
     		return tempndcgVal/count;
     }

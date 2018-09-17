@@ -75,7 +75,7 @@ public class LuceneMain
 
 				System.out.println("MAP ="+ measures_obj.calculateMeanAvgPrecision());
 				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
-
+				System.out.println("NDCG_20 = " + measures_obj.calculateNDCG());
 
 				LuceneConstants.queryDocPairRead.clear();
 
