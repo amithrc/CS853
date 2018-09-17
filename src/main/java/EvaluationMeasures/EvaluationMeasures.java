@@ -3,6 +3,7 @@ package main.java.EvaluationMeasures;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.*;
 
 import main.java.LuceneIndex.LuceneConstants;
 import main.java.util.LuceneUtil;
@@ -12,6 +13,7 @@ public class EvaluationMeasures{
     public Map<String,Map<String,Integer>> qrel_data;
 
     private Map<String, Double> mean_avg_precison = new HashMap<String, Double>();
+    private final static int TOTAL = 20;
 
     public EvaluationMeasures(Map<String,Map<String,Integer>> qrel)
     {
@@ -30,6 +32,7 @@ public class EvaluationMeasures{
     }
 
     private void getAvgPrecision(){
+        //calculate average precision of every query
 
         for (Map.Entry<String, Map<String,Integer>> query : LuceneConstants.queryDocPairRead.entrySet()){
 
@@ -41,14 +44,15 @@ public class EvaluationMeasures{
 
             for(Map.Entry<String,Integer> document: docIdRank.entrySet()){
                 query_count = query_count + 1;
+                //check if the given paragraph document is relevant for the query or not
                 if(getQrelRelevancy(queryId, document.getKey()) == 1){
                     ranking_rel_count = ranking_rel_count + 1;
                     avg_precision = avg_precision + (double)(ranking_rel_count/query_count);
                 }
 
             }
-            int rel_docs_count = LuceneUtil.relevancy_count(qrel_data, queryId);
-            if(rel_docs_count == 0){
+            int rel_docs_count = LuceneUtil.relevancy_count(qrel_data, queryId); //get the total true relevant docs for the query
+            if(rel_docs_count == 0){ //if the total true relevant docs are 0
                 avg_precision = 0.0;
             }else{
                 avg_precision = avg_precision/rel_docs_count;
@@ -59,6 +63,7 @@ public class EvaluationMeasures{
 
     public double calculateMeanAvgPrecision()
     {
+        //Calculate the average precision of every query and then take mean
         getAvgPrecision();
         double MAP = 0.0;
         double totalAP = 0.0;
@@ -66,6 +71,7 @@ public class EvaluationMeasures{
             totalAP = totalAP + avgPrec.getValue();
         }
         int total_size = mean_avg_precison.size();
+        //Take the mean of the APs of the queries
         if(total_size != 0){
             MAP = totalAP/total_size;
         }
@@ -199,12 +205,12 @@ public class EvaluationMeasures{
 		    	  double idcgVal = this.calculateDCG(query.getKey(), idealQueryDocPair.get(query.getKey()));
 
 		    	  tempndcgVal += dcgVal/idcgVal;
-		    	  
+
 		    	  //System.out.println("VC - NDCG" + query.getKey()+' '+dcgVal/idcgVal);
 		    	  
 		      }
     		//System.out.println("VC - NDCG Total: " + tempndcgVal/count);
-    		
+
     		return tempndcgVal/count;
     }
     	
@@ -236,6 +242,65 @@ public class EvaluationMeasures{
         }
         MAP = MAP /LuceneConstants.queryDocPairRead.size();
         return MAP;
+    }
+
+    public Double calculateNDCG20() {
+        double NDCG = 0.0;
+        int counter = 0;
+
+        for (Map.Entry<String, Map<String, Integer>> Query : LuceneConstants.queryDocPair.entrySet()) {
+            NDCG += calculateDCG20(Query) / calculateIDCG20(Query);
+            counter++;
+        }
+
+        NDCG /= counter;
+
+        return NDCG;
+
+    }
+
+    private Double calculateDCG20(Map.Entry<String, Map<String, Integer>> Query) {
+        double DCG = 0.0;
+        int counter = 1;
+        Map<String, Integer> docIDRank = Query.getValue();
+        ArrayList<Integer> grades = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> row : docIDRank.entrySet()) {
+
+            if ((getQrelRelevancy(Query.getKey(), row.getKey())) == 1) {
+                grades.add(1);
+            } else grades.add(0);
+
+            if (counter <= TOTAL) {
+                DCG += (Math.pow(2, grades.get(counter - 1))) / (Math.log(counter + 1));
+                counter++;
+            } else break;
+        }
+
+        return DCG;
+    }
+
+    private Double calculateIDCG20(Map.Entry<String, Map<String, Integer>> Query) {
+
+        double IDCG = 0.0;
+        int counter = 1;
+        Map<String, Integer> docIDRank = Query.getValue();
+        ArrayList<Integer> grades = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> row : docIDRank.entrySet()) {
+
+            if ((getQrelRelevancy(Query.getKey(), row.getKey())) == 1) {
+                grades.add(1);
+            } else grades.add(0);
+
+            Collections.sort(grades, Collections.reverseOrder());
+
+            if (counter <= TOTAL) {
+                IDCG += (Math.pow(2, grades.get(counter - 1))) / (Math.log(counter + 1));
+                counter++;
+            } else break;
+        }
+        return IDCG;
     }
 
 
