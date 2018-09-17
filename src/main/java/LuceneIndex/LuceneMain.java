@@ -97,6 +97,7 @@ public class LuceneMain
 			      EvaluationMeasures measures_obj_custom = new EvaluationMeasures(qrel);
 			      measures_obj_custom.calculateMeanAvgPrecision();
 			      measures_obj_custom.calculatePrecisionAtR();
+			      System.out.println("NDCG@20 "+ measures_obj_custom.calculateNDCG());
 
 		}
 
