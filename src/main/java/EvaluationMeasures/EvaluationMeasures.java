@@ -244,6 +244,12 @@ public class EvaluationMeasures{
         return MAP;
     }
 
+    /*Below NDCG Algorithm written by Sepeidh Koofhar, Taken From her branch
+    * We had issues merging her branch so I had to commit on her behalf
+    * @Author- Sepeidh Koofhar*/
+
+
+
     public Double calculateNDCG20() {
         double NDCG = 0.0;
         int counter = 0;
