@@ -144,6 +144,75 @@ public class EvaluationMeasures{
         }
         return (pATr/number_of_query_processed);
     }
+    
+    
 
+    /**
+     * 
+     * Caculate DCG based on the formula from lecture: Sum from i=1 to p of (2^relevancy of i -1)/(log base 2 of (i+1)
+     * we are using NDCG at 20 so I have added the at_Value variable to capture this
+     * @return
+     */
+    public double calculateDCG(String queryId,  Map<String,Integer> paraId) {
+
+    	int at_Value = 20;
+    	
+    	//for (Map.Entry<String, Map<String,Integer>> query : LuceneConstants.queryDocPair.entrySet()){
+
+    		Double CGVal = 0.0;
+            //Inner value which holds the Para_ID
+            
+            //Tracking for which paragraph we are at (This is a substitute for i in the formula)
+            int currentParagraph = 0;
+    		
+    		 for(Map.Entry<String,Integer> paragraph: paraId.entrySet()){
+    			 currentParagraph++;
+    			 
+    			 //relevancy of i
+    			 int relevancy = getQrelRelevancy(queryId,paragraph.getKey()) == 1 ? 1 : 0;
+    			 
+    			 //System.out.println("VC - printing relevancy: " + relevancy);
+    			 
+    			 //System.out.println("VC - Adding to cg: " + (Math.pow(2, relevancy) -1)/(Math.log(currentParagraph+1)/Math.log(2)));
+    			 CGVal += (Math.pow(2, relevancy) -1)/(Math.log(currentParagraph+1)/Math.log(2));
+    			 
+    			 
+    			 if(currentParagraph >= at_Value) {
+    				 break;
+    			 }
+    			 
+             }
+    		 
+    		 System.out.println("VC - " + queryId+' '+CGVal);
+    	     return CGVal;
+        }
+    
+    public double calculateiDCG(String query_id, Map.Entry<String, Map<String,Integer>> query) {
+    	return 0.0;
+    }
+    
+    
+    public double calculateNDCG() {
+    		Map<String, Map<String,Integer>> idealQueryDocPair = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
+    		
+    		double tempndcgVal = 0.0;
+    		int count = 0;
+    	
+    		for(Map.Entry<String, Map<String,Integer>> query : LuceneConstants.queryDocPair.entrySet()){
+    			 
+    			  count++;
+		    	  double dcgVal = this.calculateDCG(query.getKey(),query.getValue());
+		    	  double idcgVal = this.calculateDCG(query.getKey(), idealQueryDocPair.get(query.getKey()));
+
+		    	  tempndcgVal += dcgVal/idcgVal;
+		    	  
+		    	  System.out.println("VC - NDCG" + query.getKey()+' '+dcgVal/idcgVal);
+		    	  
+		      }
+    		System.out.println("VC - NDCG Total: " + tempndcgVal/count);
+    		
+    		return tempndcgVal/count;
+    }
+    	
 
 }
