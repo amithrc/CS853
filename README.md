@@ -1,6 +1,13 @@
 # CS853
 This repository contains all the source code for the **CS853** 
 
+# Team Members (Team 3)
+
+* Amith Ramanagar chandrashekar
+* Pooja oza
+* Sepideh Koohfar
+* Vaughan coder
+
 
 # Java
 
@@ -61,12 +68,12 @@ mvn package
 
 # Build Script
 
-Run the ***./install.sh*** with absolute path to the paragraph CBOR file. Program creates the indexed_file directory within the CS853 directory.
+Run the ***./install.sh*** with absolute path to the paragraph_CBOR[0],Outline_CBOR[1],Qrel[2].Program creates the indexed_file directory within the CS853 directory.
 
 Please run git clone https://github.com/amithrc/CS853.git
 cd CS853
 Run the below Installtion script.
 ```
-./install.sh <absolute_path_to_CBOR>
+./install.sh <absolute_path_to_CBOR> <absolute_path_to_OUTLINE> <absolute_path_to_QREL>
 ```
 

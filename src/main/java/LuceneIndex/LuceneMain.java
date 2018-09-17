@@ -2,6 +2,7 @@ package main.java.LuceneIndex;
 
 import main.java.LuceneIndex.LuceneIndexer;
 import main.java.LuceneSearch.LuceneSearcher;
+import main.java.EvaluationMeasures.EvaluationMeasures;
 
 import java.io.IOException;
 import main.java.util.LuceneUtil;
@@ -19,7 +20,9 @@ public class LuceneMain
 	 */
 	private static void  usage()
 	{
-		System.out.println("Please pass the index file absolute path");
+		System.out.println("args[0] --> Paragraph CBOR Absolute Path");
+		System.out.println("args[1] --> Outlines CBOR Absolute Path");
+		System.out.println("args[2] --> Article  Qrel Absolute Path");
 		System.exit(-1 );
 	}
 
@@ -28,75 +31,67 @@ public class LuceneMain
 	 * @param args file path for the corpus
 	 * @throws IOException if things go wrong
 	 */
+
 	public static void main(String[] args) throws IOException
 	{
 		String dest;
 		System.out.println("Please pass the file to be indexed");
-		if( args.length < 1 )
+		if( args.length < 3 )
 		{
 			usage();
 		}
 		else
 		{
-				/*
-				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
 				String[] mode_input = new String[] {"paragraphs", args[0]};
-				
+				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
+
 				//Sets the file directory that the corpus is coming from
+
 				LuceneConstants.setIndexFileName(args[0]);
 				LuceneConstants.setDirectoryName(dest);
-				
+
+				LuceneConstants.setOutlineCbor(args[1]);
+				LuceneConstants.setQrelPath(args[2]);
+
 				//Create the new lucene Index
 				LuceneIndexer l = new LuceneIndexer();
+
 				l.setMode(mode_input);
 				l.getIndexWriter(dest);
 				l.closeIndexWriter();
-				
-				System.out.println();
-                System.out.println("Starting the basic search...");
-                
-                //Run basic search
-                LuceneSearcher basicSearcher = new LuceneSearcher(false);
-                basicSearcher.getRankingDocuments();
-                
-                System.out.println();
-				System.out.println("Starting the Custom search...");
-				
-				//Run advanced search
-                LuceneSearcher customSearcher = new LuceneSearcher(true);
-                customSearcher.getRankingDocuments();
-                */
-                
-			    String file = "C:\\Users\\VaughanCoder\\GitWorkspace\\CS853Docs\\test200.v2.0\\test200\\test200-train\\train.pages.cbor-outlines.cbor";
-				Map<String,String> p =LuceneUtil.readQrel(file);
-				
-				String[] mode_input = new String[] {"paragraphs", args[0]};
-				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
-				
-				//Sets the file directory that the corpus is coming from
-				LuceneConstants.setIndexFileName(args[0]);
-				LuceneConstants.setDirectoryName(dest);
-				
-				//Create the new lucene Index
-				LuceneIndexer l = new LuceneIndexer();
-				l.setMode(mode_input);
-				l.getIndexWriter(dest);
-				l.closeIndexWriter();
-				
-				 //Run basic search
+
+
+				/* Reading outline file and it returns the PageID as the key and pageName as its value*/
+
+				Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
+
+				 /*Creates the instance of the basic search*/
                 LuceneSearcher basicSearcher = new LuceneSearcher(false);
                 basicSearcher.writeRankings(p);
-				
-				//Run advanced search
+
+			    LuceneConstants.queryDocPairRead = LuceneUtil.createQrelMap("output_standard_ranking.txt");
+				Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
+				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
+
+				System.out.println("-------------------------------Default Lucene Search---------------------------------");
+				System.out.println("MAP ="+ measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
+				System.out.println("NDCG_20 = " + measures_obj.calculateNDCG());
+
+				LuceneConstants.queryDocPairRead.clear();
+
+				/*Creates the instance of the Custom scoring function*/
                 LuceneSearcher customSearcher = new LuceneSearcher(true);
                 customSearcher.writeRankings(p);
-                
-
-
+			System.out.println("-------------------------------Custom Search----------------------------------------------");
+			    LuceneConstants.queryDocPairRead = LuceneUtil.createQrelMap("output_custom_ranking.txt");
+				System.out.println("MAP ="+ measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
+				System.out.println("NDCG_20 = " + measures_obj.calculateNDCG());
 
 		}
 
-		}
+	}
 
 }
 

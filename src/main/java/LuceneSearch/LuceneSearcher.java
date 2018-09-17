@@ -14,11 +14,15 @@ import org.apache.lucene.document.Document;
 
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import main.java.LuceneIndex.LuceneConstants;
@@ -43,6 +47,7 @@ public class LuceneSearcher
 	 private QueryParser parser = null;
 	 private Query queryObj = null;
 	 private String methodName = null;
+	 private String output_file_name = null;
 
 	    /** 
 	     * Creates a new instance of index searcher for basic search and custom search
@@ -58,6 +63,7 @@ public class LuceneSearcher
 	        searcher.setSimilarity(sb);
 	        parser = new QueryParser("body", new StandardAnalyzer());
 	        methodName = "Custom";
+			output_file_name = "output_custom_ranking.txt";
 	        
 		 }else {
 			 
@@ -65,6 +71,7 @@ public class LuceneSearcher
 		    searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME))));
 	        parser = new QueryParser("body", new StandardAnalyzer());
 	        methodName = "Standard";
+			output_file_name = "output_standard_ranking.txt";
 		 }
 	    }
 
@@ -131,7 +138,7 @@ public class LuceneSearcher
 
 	    	for(int query_ind = 0; query_ind<QUERY.length; query_ind++){
 
-	    		System.out.println("Searching for: " + QUERY[query_ind]);
+	    		//System.out.println("Searching for: " + QUERY[query_ind]);
 	    		
 	    		try{
 	    			//Query the top 10 documents for this query
@@ -160,6 +167,26 @@ public class LuceneSearcher
 			return resultDocs;
 
 		}
+
+		// outerkey-->Query ID
+		//Inner rkey -->paraID
+
+
+		private void createRankingQueryDocPair(String outer_key, String inner_key, Integer rank)
+		{
+			if(LuceneConstants.queryDocPair.containsKey(outer_key))
+			{
+				Map<String, Integer> extract = LuceneConstants.queryDocPair.get(outer_key);
+				extract.put(inner_key, rank);
+			}
+			else
+			{
+
+				Map<String,Integer> temp = new HashMap<String,Integer>();
+				temp.put(inner_key, rank);
+				LuceneConstants.queryDocPair.put(outer_key,temp);
+			}
+		}
 	    
 	    
 	    /**
@@ -169,6 +196,8 @@ public class LuceneSearcher
 	    	    throws IOException {
 	    	
 	    	List<String> rankings = new ArrayList<String>();
+
+
 	    	for(int ind=0; ind<scoreDocs.length; ind++){
 
 				//Get the scoring document
@@ -184,7 +213,7 @@ public class LuceneSearcher
 				//String paraBody = rankedDoc.getField("body").stringValue();
 				String paraRank = String.valueOf(ind+1);
 				rankings.add(queryId + " Q0 " + paraId + " " + paraRank + " " + docScore + " "+teamName + "-" + methodName);
-
+				createRankingQueryDocPair(queryId, paraId, Integer.valueOf(paraRank));
 			}
 	    	
 	    	
@@ -197,18 +226,37 @@ public class LuceneSearcher
 	     */
 	    public void writeRankings(Map<String,String> p)
 		{
+			Path file = Paths.get(output_file_name);
+
+			try {
+				if(output_file_name != null){
+
+					File e = new File(output_file_name);
+					if(e.exists())
+					{
+						e.delete();
+					}
+					Files.createFile(file);
+				}
+				else{
+					System.out.println("Output file name is null. Please check");
+					System.exit(1);
+				}
+			}
+			catch (IOException e) {
+				System.out.println(e.getMessage());
+			}
+
 			for(Map.Entry<String,String> m:p.entrySet())
 			{
 				try {
-					System.out.println(m.getValue());
 					TopDocs searchDocs = this.performSearch(m.getValue(), 100);
 					
 					ScoreDoc[] scoringDocuments = searchDocs.scoreDocs;
 					List<String> formattedRankings = this.getRankings(scoringDocuments, m.getKey());
-					
-					Path file = Paths.get("output.txt");
+
 					Files.write(file, formattedRankings, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-					
+
 				}catch (ParseException e)
 				{
 					System.out.println(e.getMessage());
