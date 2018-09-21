@@ -1,4 +1,4 @@
-package main.java.LuceneIndex;
+package main.java.util;
 
 
 import java.util.LinkedHashMap;

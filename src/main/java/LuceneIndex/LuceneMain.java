@@ -1,10 +1,11 @@
 package main.java.LuceneIndex;
 
-import main.java.LuceneIndex.LuceneIndexer;
 import main.java.LuceneSearch.LuceneSearcher;
 import main.java.EvaluationMeasures.EvaluationMeasures;
 
 import java.io.IOException;
+
+import main.java.util.LuceneConstants;
 import main.java.util.LuceneUtil;
 import java.util.Map;
 

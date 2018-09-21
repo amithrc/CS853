@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.*;
 
-import main.java.LuceneIndex.LuceneConstants;
+import main.java.util.LuceneConstants;
 import main.java.util.LuceneUtil;
 
 public class EvaluationMeasures{

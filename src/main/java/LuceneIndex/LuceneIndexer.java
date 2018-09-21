@@ -1,4 +1,5 @@
 package main.java.LuceneIndex;
+import main.java.util.LuceneConstants;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;

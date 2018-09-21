@@ -20,11 +20,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
-import main.java.LuceneIndex.LuceneConstants;
+import main.java.util.LuceneConstants;
 
 /**
  * Implementation of the searching algorithms for basic search and term frequency search
