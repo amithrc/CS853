@@ -27,25 +27,28 @@ import java.io.FileNotFoundException;
  */
 class LuceneIndexer
 {
+		private IndexWriter indexWriter;
 
-
-	   private IndexWriter indexWriter = null;
-	   private String[] mode = null;
+		LuceneIndexer()
+		{
+			indexWriter = null;
+		}
 
 	   /**
 	    * Prepares the indexwriter for use in searching later
-	    * @param relative_path
 	    * @return gets indexwriter, if it has previously been created it will return the old index writer
 	    * 		 if its hasn't been created we parse the paragraph and pass back
 	    * @throws IOException
 	    */
-	    IndexWriter getIndexWriter(String relative_path) throws IOException {
+
+	    public void getIndexWriter() throws IOException {
 	    	
 	    	//If we haven't created and indexwriter yet
-	        if (indexWriter == null) {
+	        if (indexWriter == null)
+	        {
 	        	
 	        	//Get the path of the index
-	            Directory indexDir = FSDirectory.open(Paths.get(relative_path));
+	            Directory indexDir = FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME));
 	            
 	            //Create the configuration for the index
 	            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
@@ -55,10 +58,9 @@ class LuceneIndexer
 	            indexWriter = new IndexWriter(indexDir, config);
 	            
 	            //Parse the paragraphs and return the indexwriter with the corpus indexed
-	            indexWriter = parseParagraph(indexWriter);
+	             parseParagraph(indexWriter);
 	           
 	        }
-	        return indexWriter;
 	   }
 	    
 	 /**
@@ -66,28 +68,24 @@ class LuceneIndexer
 	  * @param indexWriter generated indexwriter to add doc to
 	  * @return indexwriter with docs added
 	  */
-	 private IndexWriter parseParagraph(IndexWriter indexWriter) {
+	 private void parseParagraph(IndexWriter indexWriter)
+	 {
 		 
-		 //Preparation for future changes based on trec-car github examples
-		 if (mode[0].equals("paragraphs")) {
-			 
-			 //We added the paragraphs in the main so that we can process
-	            String paragraphsFile = mode[1];
-	            
-	            //We are trying to process the input from the fileinputstream
+				// this function shoudl take care of the Reading the CBOR file and indexing it
 	            FileInputStream fileInputStream2 = null;
 	            try {
-	            	fileInputStream2 = new FileInputStream(new File(paragraphsFile));
+	            	fileInputStream2 = new FileInputStream(new File(LuceneConstants.FILE_NAME));
 	            }catch(FileNotFoundException fnf) {
 	            	System.out.println(fnf.getMessage());
 	     
 	            }
-	            
+
+	            int increment=0;
 	            //For each of the paragraphs from the deserialized inputstream
 	            for(Data.Paragraph p: DeserializeData.iterableParagraphs(fileInputStream2))
 	            {
-	            	
-	            	//We create a document
+
+	            	  //We create a document
 	            	  System.out.println("Indexing "+ p.getParaId());
 	            	  Document doc = new Document();
 	            	  
@@ -96,36 +94,45 @@ class LuceneIndexer
 	            	  doc.add(new TextField("body", p.getTextOnly(), Field.Store.YES));
 	            	  
 	            	  //From here we add the document to the indexwriter
+
 	            	  try {
 	            		  indexWriter.addDocument(doc);
+						  increment++;
+
+						  //commit the Data after 50 paragraph
+
+						  if(increment % 50 ==0)
+						  {
+								indexWriter.commit();
+						  }
 	            	  }catch(IOException ioe) {
 	            		  System.out.println(ioe.getMessage());
 	            	  }
 	            }
+			closeIndexWriter();
 	            
 		 }
-		 //we return the indexwriter with the paragraphs added
-		 return indexWriter;
-		 
-	 }
+
+
 
 	 /**
 	  * Closes the indexwriter so that we can use it in searching
 	  * @throws IOException
 	  */
-	 void closeIndexWriter() throws IOException {
-	        if (indexWriter != null) {
-	            indexWriter.close();
+	 private void closeIndexWriter()
+	 {
+	        if (indexWriter != null)
+	        {
+	        	try
+				{
+					indexWriter.close();
+				}
+				catch (IOException e)
+				{
+					System.out.println(e.getMessage());
+				}
+
 	        }
 	   }
-	
-	    /**
-	     * Sets the corpus for the index writer
-	     * @param input
-	     */
-	   void setMode(String[] input)
-	   {
-	    	mode = input;
-	   }
-	
+
 }

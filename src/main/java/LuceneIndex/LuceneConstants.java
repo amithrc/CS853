@@ -32,7 +32,7 @@ public class LuceneConstants
     {
         OUTLINE_CBOR= d;
     }
-    public static void setQrelPath(String d){ QREL_PATH=d;}
+    public static void setQrelPath(String d){ QREL_PATH= d;}
 
 
 }

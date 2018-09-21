@@ -61,6 +61,11 @@ public class EvaluationMeasures{
         }
     }
 
+    /**
+     * Author- Pooja oza
+     * Calculate MAP
+     */
+
     public double calculateMeanAvgPrecision()
     {
         //Calculate the average precision of every query and then take mean
@@ -78,6 +83,12 @@ public class EvaluationMeasures{
         return MAP;
 
     }
+
+
+    /**
+     * Author- Amith RC
+     * Calculate Precision@R
+     */
 
     public double calculatePrecisionAtR()
     {
@@ -139,10 +150,8 @@ public class EvaluationMeasures{
             {
                 System.out.println(e.getMessage());
             }
-           //  System.out.println(" Query = "+ QueryID + " Relevant count = " +is_relevant_counter + " Actual number of count ="+ relevant_count + " Result = "+ res) ;
-//            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------");
+
         }
-        //System.out.println("P@R across Queries = "+ (pATr/number_of_query_processed));
         return (pATr/number_of_query_processed);
     }
     
@@ -214,35 +223,6 @@ public class EvaluationMeasures{
     		return tempndcgVal/count;
     }
     	
-    public double calcMAP()
-    {
-        double MAP=0.0;
-        for(Map.Entry<String,Map<String,Integer>> outer: LuceneConstants.queryDocPairRead.entrySet())
-        {
-            String queryID = outer.getKey();
-            int is_rel=0;
-            int para_processed_so_far=0;
-            double AP=0.0;
-            int paraC= outer.getValue().size();
-            for(Map.Entry<String,Integer> inner: outer.getValue().entrySet())
-            {
-                para_processed_so_far+=1;
-                if(getQrelRelevancy(queryID,inner.getKey())==1)
-                {
-                    is_rel+=1;
-                    double num =(double) is_rel/para_processed_so_far;
-                    AP+= num;
-
-                }
-
-            }
-            AP = AP / paraC;
-            MAP+=AP;
-            AP=0;
-        }
-        MAP = MAP /LuceneConstants.queryDocPairRead.size();
-        return MAP;
-    }
 
     /*Below NDCG Algorithm written by Sepeidh Koofhar, Taken From her branch
     * We had issues merging her branch so I had to commit on her behalf

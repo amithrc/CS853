@@ -35,18 +35,14 @@ public class LuceneMain
 	public static void main(String[] args) throws IOException
 	{
 		String dest;
-		System.out.println("Please pass the file to be indexed");
 		if( args.length < 3 )
 		{
 			usage();
 		}
+
 		else
 		{
-				String[] mode_input = new String[] {"paragraphs", args[0]};
 				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
-
-				//Sets the file directory that the corpus is coming from
-
 				LuceneConstants.setIndexFileName(args[0]);
 				LuceneConstants.setDirectoryName(dest);
 
@@ -56,9 +52,8 @@ public class LuceneMain
 				//Create the new lucene Index
 				LuceneIndexer l = new LuceneIndexer();
 
-				l.setMode(mode_input);
-				l.getIndexWriter(dest);
-				l.closeIndexWriter();
+				l.getIndexWriter();
+
 
 
 				/* Reading outline file and it returns the PageID as the key and pageName as its value*/
