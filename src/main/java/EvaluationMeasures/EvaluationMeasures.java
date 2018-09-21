@@ -34,7 +34,7 @@ public class EvaluationMeasures{
     private void getAvgPrecision(){
         //calculate average precision of every query
 
-        for (Map.Entry<String, Map<String,Integer>> query : LuceneConstants.queryDocPairRead.entrySet()){
+        for (Map.Entry<String, Map<String,Integer>> query : LuceneConstants.queryDocPair.entrySet()){
 
             String queryId = query.getKey();
             Map<String,Integer> docIdRank= query.getValue();
@@ -88,7 +88,7 @@ public class EvaluationMeasures{
         double pATr = 0.0;
 
 
-        for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPairRead.entrySet())
+        for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPair.entrySet())
         {
             // To have the Precision @ R Computed for each Query.
             double res =0.0;

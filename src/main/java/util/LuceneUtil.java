@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.LinkedHashMap;
 
 import java.util.Map;
+import java.io.File;
 
 
 public class LuceneUtil
