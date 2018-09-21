@@ -64,7 +64,6 @@ public class LuceneMain
                 LuceneSearcher basicSearcher = new LuceneSearcher(false);
                 basicSearcher.writeRankings(p);
 
-			    LuceneConstants.queryDocPairRead = LuceneUtil.createQrelMap("output_standard_ranking.txt");
 				Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
 				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
 
@@ -73,13 +72,12 @@ public class LuceneMain
 				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
 				System.out.println("NDCG_20 = " + measures_obj.calculateNDCG());
 
-				LuceneConstants.queryDocPairRead.clear();
+				LuceneConstants.queryDocPair.clear();
 
 				/*Creates the instance of the Custom scoring function*/
                 LuceneSearcher customSearcher = new LuceneSearcher(true);
                 customSearcher.writeRankings(p);
-			System.out.println("-------------------------------Custom Search----------------------------------------------");
-			    LuceneConstants.queryDocPairRead = LuceneUtil.createQrelMap("output_custom_ranking.txt");
+				System.out.println("-------------------------------Custom Search----------------------------------------------");
 				System.out.println("MAP ="+ measures_obj.calculateMeanAvgPrecision());
 				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
 				System.out.println("NDCG_20 = " + measures_obj.calculateNDCG());

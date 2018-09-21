@@ -12,19 +12,18 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.document.Document;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.io.IOException;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
 import main.java.LuceneIndex.LuceneConstants;
 
 /**
@@ -35,11 +34,7 @@ import main.java.LuceneIndex.LuceneConstants;
 
 public class LuceneSearcher
 {
-	//The hard coded queries
-	private final String[] QUERY = {"power nap benefits",
-			"whale vocalization production of sound",
-			"pokemon puzzle league"};
-	
+
 	 private final String teamName = "Team 3";
 
 	//Our searcher, parser, and query object initialization
@@ -53,26 +48,23 @@ public class LuceneSearcher
 	     * Creates a new instance of index searcher for basic search and custom search
 	     */
 	 public LuceneSearcher(Boolean isCustomSearch) throws IOException {
-		 
-		 
-		 if(isCustomSearch) {
-			 
+
 		 //Create the searcher object from Lucene constants to get the directory name in the constants
-	        searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME))));
+		 searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME))));
+
+		 if(isCustomSearch) {
+
 	        SimilarityBase2 sb = new SimilarityBase2(); 
 	        searcher.setSimilarity(sb);
-	        parser = new QueryParser("body", new StandardAnalyzer());
 	        methodName = "Custom";
-			output_file_name = "output_custom_ranking.txt";
 	        
 		 }else {
-			 
-			//Create basic searcher 
-		    searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME))));
-	        parser = new QueryParser("body", new StandardAnalyzer());
-	        methodName = "Standard";
-			output_file_name = "output_standard_ranking.txt";
+			methodName = "Standard";
 		 }
+
+		 parser = new QueryParser("body", new StandardAnalyzer());
+		 output_file_name = "Output_"+methodName+"_Ranking.txt";
+
 	    }
 
 	    /**
@@ -90,87 +82,8 @@ public class LuceneSearcher
 	        return searcher.search(queryObj, n);
 	    }
 
-	    /**
-	     * Get Documents using searcher
-	     * @param documents
-	     * @return
-	     * @throws IOException
-	     */
-	    private List<String[]> getDocument(TopDocs documents)
-	    throws IOException {
-
-	    	//Create a Score document array
-			ScoreDoc[] scoringDocuments = documents.scoreDocs;
-
-			//Rank the documents
-			List<String[]> rankingDocuments = new ArrayList<>();
-
-			//Loop through scoring documents and process their ranking
-			for(int ind=0; ind<scoringDocuments.length; ind++){
-
-				//Get the scoring document
-				ScoreDoc scoringDoc = scoringDocuments[ind];
-
-				//Create the rank document from searcher
-				Document rankedDoc = searcher.doc(scoringDoc.doc);
-//				System.out.println(searcher.explain(queryObj, scoringDoc.doc));
-
-				//Print out the results from the rank document
-				String docScore = String.valueOf(scoringDoc.score);
-				String paraId = rankedDoc.getField("id").stringValue();
-				String paraBody = rankedDoc.getField("body").stringValue();
-				String paraRank = String.valueOf(ind+1);
-				System.out.println(paraId+" "+docScore+" "+paraBody);
-
-				rankingDocuments.add(new String[] {paraId, paraBody, docScore, paraRank});
-			}
-	        return rankingDocuments;
-	    }
-	  
-
-	    /**
-	     * Gets the top ranking documents (we currently use top 10)
-	     * @return
-	     */
-	    public List<String[]> getRankingDocuments(){
-
-	    	List<String[]> resultDocs = null;
-
-	    	for(int query_ind = 0; query_ind<QUERY.length; query_ind++){
-
-	    		//System.out.println("Searching for: " + QUERY[query_ind]);
-	    		
-	    		try{
-	    			//Query the top 10 documents for this query
-					TopDocs searchDocs = performSearch(QUERY[query_ind], 10);
-					 resultDocs = getDocument(searchDocs);
-						
-					
-					for(int ind=0; ind< resultDocs.size(); ind++){
-						
-						
-					}
-
-					/*for(int r=0; r<resultDocs.size(); r++){
-						System.out.println(resultDocs.get(r));
-					}*/
-				}
-				catch (IOException ioe){
-					System.out.println(ioe.getMessage());
-				}
-				catch (ParseException pe){
-					System.out.println(pe.getMessage());
-				}
-	    		System.out.println();
-
-			}
-			return resultDocs;
-
-		}
-
 		// outerkey-->Query ID
 		//Inner rkey -->paraID
-
 
 		private void createRankingQueryDocPair(String outer_key, String inner_key, Integer rank)
 		{
@@ -182,7 +95,7 @@ public class LuceneSearcher
 			else
 			{
 
-				Map<String,Integer> temp = new HashMap<String,Integer>();
+				Map<String,Integer> temp = new LinkedHashMap<String,Integer>();
 				temp.put(inner_key, rank);
 				LuceneConstants.queryDocPair.put(outer_key,temp);
 			}
@@ -215,8 +128,7 @@ public class LuceneSearcher
 				rankings.add(queryId + " Q0 " + paraId + " " + paraRank + " " + docScore + " "+teamName + "-" + methodName);
 				createRankingQueryDocPair(queryId, paraId, Integer.valueOf(paraRank));
 			}
-	    	
-	    	
+
 	    	return rankings;
 	    }
 	    
@@ -232,8 +144,7 @@ public class LuceneSearcher
 				if(output_file_name != null){
 
 					File e = new File(output_file_name);
-					if(e.exists())
-					{
+					if (e.exists()) {
 						e.delete();
 					}
 					Files.createFile(file);
@@ -244,7 +155,7 @@ public class LuceneSearcher
 				}
 			}
 			catch (IOException e) {
-				System.out.println(e.getMessage());
+				e.printStackTrace();
 			}
 
 			for(Map.Entry<String,String> m:p.entrySet())
@@ -259,11 +170,11 @@ public class LuceneSearcher
 
 				}catch (ParseException e)
 				{
-					System.out.println(e.getMessage());
+					e.printStackTrace();
 				}
 				catch (IOException e)
 				{
-					System.out.println(e.getMessage());
+					e.printStackTrace();
 				}
 
 			}
