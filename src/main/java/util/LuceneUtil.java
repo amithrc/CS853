@@ -2,9 +2,8 @@ package main.java.util;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import edu.unh.cs.treccar_v2.Data;
 import java.io.*;
-import java.util.LinkedHashMap;
+import java.util.*;
 
-import java.util.Map;
 import java.io.File;
 
 
@@ -121,4 +120,25 @@ public class LuceneUtil
         }
 
     }
+
+//    public static  boolean validateInput(String d, String q)
+//    {
+//        char[] doc = d.toCharArray();
+//        char [] que =q.toCharArray();
+//        //List<String> known_var = new ArrayList<String>();
+//
+//        boolean doc1 = Arrays.asList(LuceneConstants.known_variants).containsAll(Arrays.asList(doc));
+//        boolean que1 = Arrays.asList(LuceneConstants.known_variants).containsAll(Arrays.asList(que));
+//
+//        System.out.println(doc1);
+//        System.out.println(que1);
+//
+//        System.out.println( Arrays.asList(LuceneConstants.known_variants).get(0));
+//
+//        System.out.println(doc);
+//
+//
+//        return true;
+//    }
 }
+

@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import main.java.util.LuceneConstants;
 
+import main.java.lucenerankingmodels.TFIDF;
+
 /**
  * Implementation of the searching algorithms for basic search and term frequency search
  * @author Pooja
@@ -37,11 +39,17 @@ public class LuceneSearcher
 	 private final String teamName = "Team 3";
 
 	//Our searcher, parser, and query object initialization
-	 private IndexSearcher searcher = null;
+	 protected IndexSearcher searcher = null;
 	 private QueryParser parser = null;
 	 private Query queryObj = null;
-	 private String methodName = null;
-	 private String output_file_name = null;
+	 protected String methodName = null;
+	 protected String output_file_name = null;
+
+	 public LuceneSearcher() throws IOException
+	 {
+		 searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME))));
+		 parser = new QueryParser("body", new StandardAnalyzer());
+	 }
 
 	    /** 
 	     * Creates a new instance of index searcher for basic search and custom search
@@ -187,8 +195,10 @@ public class LuceneSearcher
 	    private class SimilarityBase2 extends SimilarityBase{
 	    	
 			@Override
-			protected float score(BasicStats basicStats, float v, float v1) {
+			protected float score(BasicStats basicStats, float v, float v1)
+			{
 				return v;
+
 			}
 
 			@Override
@@ -196,6 +206,9 @@ public class LuceneSearcher
 				return null;
 			}
 		};
+
+
+
 
 	   
 }
