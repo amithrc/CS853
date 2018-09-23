@@ -40,7 +40,7 @@ public class TFIDFSearcher extends LuceneSearcher
         {
 
             TFIDF t = new TFIDF();
-            float answer = t.calculate_score(v);
+            float answer = t.calculate_score(v, basicStats);
 
             return v;
 
