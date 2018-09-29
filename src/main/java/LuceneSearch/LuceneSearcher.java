@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import main.java.util.LuceneConstants;
 
-import main.java.lucenerankingmodels.TFIDF;
-
 /**
  * Implementation of the searching algorithms for basic search and term frequency search
  * @author Pooja
