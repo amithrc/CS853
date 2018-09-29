@@ -36,7 +36,7 @@ import main.java.lucenerankingmodels.TFIDF;
 public class LuceneSearcher
 {
 
-	 private final String teamName = "Team 3";
+	 protected final String teamName = "Team 3";
 
 	//Our searcher, parser, and query object initialization
 	 protected IndexSearcher searcher = null;
@@ -172,10 +172,10 @@ public class LuceneSearcher
 					
 					ScoreDoc[] scoringDocuments = searchDocs.scoreDocs;
 					List<String> formattedRankings = this.getRankings(scoringDocuments, m.getKey());
-
 					Files.write(file, formattedRankings, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
 
-				}catch (ParseException e)
+				}
+				catch (ParseException e)
 				{
 					e.printStackTrace();
 				}

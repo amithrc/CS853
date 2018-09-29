@@ -6,6 +6,7 @@ import main.java.util.LuceneConstants;
 import main.java.util.LuceneUtil;
 import java.util.Map;
 import main.java.lucenerankingmodels.TFIDFSearcher;
+import main.java.EvaluationMeasures.EvaluationMeasures;
 
 /**
  * Main Class to handle the running of the method
@@ -41,54 +42,32 @@ public class LuceneMain
 
 		else
 		{
-//				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
-//				LuceneConstants.setIndexFileName(args[0]);
-//				LuceneConstants.setDirectoryName(dest);
-//
-//				LuceneConstants.setOutlineCbor(args[1]);
-//				LuceneConstants.setQrelPath(args[2]);
-//
-//				//Create the new lucene Index
-//				LuceneIndexer l = new LuceneIndexer();
-//				l.getIndexWriter();
+				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
+				LuceneConstants.setIndexFileName(args[0]);
+				LuceneConstants.setDirectoryName(dest);
+
+				LuceneConstants.setOutlineCbor(args[1]);
+				LuceneConstants.setQrelPath(args[2]);
+
+				//Create the new lucene Index
+				LuceneIndexer l = new LuceneIndexer();
+				l.getIndexWriter();
+
+				 Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
 
 //
-//
-//				/* Reading outline file and it returns the PageID as the key and pageName as its value*/
-//
-				 //Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
-//
-//				 /*Creates the instance of the basic search*/
-//                LuceneSearcher basicSearcher = new LuceneSearcher(false);
-//                basicSearcher.writeRankings(p);
-//
-//				Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
-//				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
-//
-//				System.out.println("-------------------------------Default Lucene Search---------------------------------");
-//				System.out.println("MAP ="+ measures_obj.calculateMeanAvgPrecision());
-//				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
-//				System.out.println("NDCG_20 = " + measures_obj.calculateNDCG());
-//
-//				LuceneConstants.queryDocPair.clear();
-//
-//				/*Creates the instance of the Custom scoring function*/
-//                LuceneSearcher customSearcher = new LuceneSearcher(true);
-//                customSearcher.writeRankings(p);
-//				System.out.println("-------------------------------Custom Search----------------------------------------------");
-//				System.out.println("MAP ="+ measures_obj.calculateMeanAvgPrecision());
-//				System.out.println("P@R = "+ measures_obj.calculatePrecisionAtR());
-//				System.out.println("NDCG_20 = " + measures_obj.calculateNDCG());
+//				TFIDFSearcher defaultSearcher = new TFIDFSearcher("DefaultSearch");
+//				defaultSearcher.setDefaultLucene();
+//				defaultSearcher.writeRankings(p);
 
 
-//			TFIDFSearcher r = new TFIDFSearcher("lnn","ltc");
-//			 r.writeRankings(p);
+//				 TFIDFSearcher r = new TFIDFSearcher("TFIDF");
+//				 r.setLNC();
+//				 r.writeRankings(p);
 
-
-
-
-
-
+				 TFIDFSearcher BNN = new TFIDFSearcher("BNN");
+				 BNN.setBNN();
+				 BNN.writeRankings(p);
 
 		}
 
