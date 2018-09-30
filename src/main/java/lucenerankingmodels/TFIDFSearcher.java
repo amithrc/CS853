@@ -118,7 +118,7 @@ public class TFIDFSearcher extends LuceneSearcher
 
     public void setLNC()
     {
-        System.out.println("LNC method is being called");
+        System.out.println(this.methodName+" is being called");
         setSearcherSimilarityBase(1);
     }
 
@@ -129,7 +129,7 @@ public class TFIDFSearcher extends LuceneSearcher
 
     public void setBNN()
     {
-        System.out.println("BNN method is being called");
+        System.out.println(this.methodName+" is being called");
         setSearcherSimilarityBase(2);
     }
 
@@ -140,7 +140,7 @@ public class TFIDFSearcher extends LuceneSearcher
 
     public void setANC()
     {
-        System.out.println("ANC method is being called");
+        System.out.println(this.methodName+" is being called");
         setSearcherSimilarityBase(3);
     }
 
@@ -151,8 +151,7 @@ public class TFIDFSearcher extends LuceneSearcher
 
     public void setDefaultLucene()
     {
-        System.out.println("Default method is being called");
-        //Calling 4 because it sets the default search of the Lucene so we can compare against it
+        System.out.println(this.methodName+" is being called");        //Calling 4 because it sets the default search of the Lucene so we can compare against it
         setSearcherSimilarityBase(4);
     }
 
@@ -166,8 +165,6 @@ public class TFIDFSearcher extends LuceneSearcher
         }
         catch(ParseException e)
         {
-            System.out.println(queryString);
-            System.out.println("Ignore and continue");
             System.out.println(e.getMessage());
         }
 
