@@ -305,10 +305,10 @@ public class EvaluationMeasures{
 
             nQuery++;
 
-            //Summation of d^2
+            //Summation of d^2 for one Query
             int dsquare=0;
 
-            //Number of pairs
+            //Number of pairs for one Query
             int n = 0;
 
             //Started as the current Document ID for the Default Lucene search.
@@ -322,18 +322,13 @@ public class EvaluationMeasures{
                     currentDocRank++;
 
                     Integer docRank = LuceneUtil.docRanking(customTFIDF,Query.getKey(),p.getKey());
-                    n++;
-                    diff = currentDocRank - docRank;
-                    dsquare += Math.pow(diff,2);
 
-                    //System.out.println(Query.getKey()+","+p.getKey()+","+val);
-
-//                    if(docRank!=0)
-//                    {
-//                        n++;
-//                        diff = currentDocRank - docRank;
-//                        dsquare += Math.pow(diff,2);
-//                    }
+                    if(docRank!=0)
+                    {
+                        n++;
+                        diff = currentDocRank - docRank;
+                        dsquare += Math.pow(diff,2);
+                    }
 
             }
 
@@ -346,8 +341,7 @@ public class EvaluationMeasures{
                 continue;
             }
 
-            double result = 1-( num /denom);
-
+            double result = 1-(num /denom);
 
             Correlation+= result;
         }

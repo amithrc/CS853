@@ -18,11 +18,66 @@ public class LuceneUtil {
             System.out.println(fnf.getMessage());
 
         }
-        for (Data.Page page : DeserializeData.iterableAnnotations(qrelStream)) {
+        for (Data.Page page : DeserializeData.iterableAnnotations(qrelStream))
+        {
+
             data.put(page.getPageId(), page.getPageName());
+
         }
         return data;
     }
+
+
+    private static String queryBuilder(Data.Page p, List<Data.Section> spath)
+    {
+
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append(p.getPageName());
+
+        for(Data.Section section:spath)
+        {
+            queryBuilder.append(" ");
+            queryBuilder.append(section.getHeading());
+        }
+        return queryBuilder.toString();
+    }
+
+    static public Map<String, String> readOutlineSectionPath(String filename) {
+        Map<String, String> data = new LinkedHashMap<String, String>();
+
+        FileInputStream qrelStream = null;
+        try {
+            qrelStream = new FileInputStream(new File(filename));
+        } catch (FileNotFoundException fnf) {
+            System.out.println(fnf.getMessage());
+
+        }
+        for (Data.Page page : DeserializeData.iterableAnnotations(qrelStream))
+        {
+            StringBuilder queryBuilder = new StringBuilder();
+            queryBuilder.append(page.getPageName());
+            //System.out.println("Page Name"+ page.getPageName());
+            for (List<Data.Section> sectionPath : page.flatSectionPaths())
+            {
+
+                //System.out.println(sectionPath);
+                for(Data.Section section:sectionPath)
+                {
+
+                    //System.out.println(section.getHeading());
+                    queryBuilder.append(" ");
+                    //System.out.println("Section "+section.getHeading());
+                    queryBuilder.append(section.getHeading());
+                }
+
+            }
+           // System.out.println("Appended String"+ queryBuilder.toString());
+            data.put(page.getPageId(), queryBuilder.toString());
+            //System.out.println("--------------------------------------------------");
+        }
+        return data;
+    }
+
 
     public static int relevancy_count(Map<String, Map<String, Integer>> m, String query_id) {
         if (m.containsKey(query_id)) {

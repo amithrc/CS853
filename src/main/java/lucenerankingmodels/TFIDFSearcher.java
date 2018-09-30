@@ -3,6 +3,10 @@ package main.java.lucenerankingmodels;
 
 
 import main.java.LuceneSearch.LuceneSearcher;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.BoostQuery;
+import org.apache.lucene.search.TopDocs;
+
 import org.apache.lucene.search.similarities.BasicStats;
 import org.apache.lucene.search.similarities.SimilarityBase;
 import java.io.IOException;
@@ -50,8 +54,7 @@ public class TFIDFSearcher extends LuceneSearcher
                         {
                             float TF = (1+ (float) Math.log10(freq));
                             float IDF =(float) Math.log10(((float) stats.getNumberOfDocuments()/ (float) stats.getDocFreq()));
-
-                            return (TF*IDF);
+                            return ((TF)/(float)Math.sqrt(docLen));
                         }
 
                         @Override
@@ -84,12 +87,13 @@ public class TFIDFSearcher extends LuceneSearcher
                         this.searcher.setSimilarity(sb);
                         break;
 
-            //Case 1 anc
+            //Case 1 ANC
             case 3:
                            sb = new SimilarityBase() {
                             @Override
                             protected float score(BasicStats stats, float freq, float docLen) {
-                                return 0;
+                                double res = (0.5 + ((0.5 * freq)/ stats.getTotalTermFreq()) ) / Math.sqrt(docLen);
+                                return (float) res;
                             }
 
                             @Override
@@ -151,5 +155,25 @@ public class TFIDFSearcher extends LuceneSearcher
         //Calling 4 because it sets the default search of the Lucene so we can compare against it
         setSearcherSimilarityBase(4);
     }
+
+    @Override
+    protected TopDocs performSearch(String queryString, int n)
+            throws IOException
+    {
+        try
+        {
+            queryObj = parser.parse(queryString);
+        }
+        catch(ParseException e)
+        {
+            System.out.println(queryString);
+            System.out.println("Ignore and continue");
+            System.out.println(e.getMessage());
+        }
+
+        BoostQuery Q = new BoostQuery(queryObj,2);
+        return searcher.search(Q, n);
+    }
+
 
 }

@@ -38,8 +38,8 @@ public class LuceneSearcher
 
 	//Our searcher, parser, and query object initialization
 	 protected IndexSearcher searcher = null;
-	 private QueryParser parser = null;
-	 private Query queryObj = null;
+	 protected QueryParser parser = null;
+	 protected Query queryObj = null;
 	 protected String methodName = null;
 	 protected String output_file_name = null;
 
@@ -80,7 +80,7 @@ public class LuceneSearcher
 	     * @throws IOException
 	     * @throws ParseException
 	     */
-	    private TopDocs performSearch(String queryString, int n)
+	    protected TopDocs performSearch(String queryString, int n)
 	    throws IOException, ParseException {
 
 	    	queryObj = parser.parse(queryString);
