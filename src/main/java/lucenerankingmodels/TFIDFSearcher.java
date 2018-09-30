@@ -8,8 +8,6 @@ import org.apache.lucene.search.similarities.SimilarityBase;
 import java.io.IOException;
 
 
-
-
 /**
  * @author : Amith RC
  */
@@ -52,8 +50,8 @@ public class TFIDFSearcher extends LuceneSearcher
                         {
                             float TF = (1+ (float) Math.log10(freq));
                             float IDF =(float) Math.log10(((float) stats.getNumberOfDocuments()/ (float) stats.getDocFreq()));
-                            float res = (TF*IDF);
-                            return (res * stats.getBoost());
+
+                            return (TF*IDF);
                         }
 
                         @Override
@@ -71,11 +69,10 @@ public class TFIDFSearcher extends LuceneSearcher
                         @Override
                         protected float score(BasicStats stats, float freq, float docLen)
                         {
-                            if(freq >0)
+                            if(freq > 0)
                             {
                                 return 1;
                             }
-
                             return 0;
                         }
 
@@ -104,7 +101,7 @@ public class TFIDFSearcher extends LuceneSearcher
                         break;
 
             default:
-                     System.out.println("Default Lucene already set by the Super constructor");
+                         System.out.println("Default Lucene already set by the Super constructor");
                          break;
         }
 
@@ -150,8 +147,8 @@ public class TFIDFSearcher extends LuceneSearcher
 
     public void setDefaultLucene()
     {
-        System.out.println("BNN method is being called");
-        //Calling 4 because it sets the default Similarity
+        System.out.println("Default method is being called");
+        //Calling 4 because it sets the default search of the Lucene so we can compare against it
         setSearcherSimilarityBase(4);
     }
 

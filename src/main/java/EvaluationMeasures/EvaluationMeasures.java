@@ -4,6 +4,7 @@ package main.java.EvaluationMeasures;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.*;
+import  java.lang.Math;
 
 import main.java.util.LuceneConstants;
 import main.java.util.LuceneUtil;
@@ -15,6 +16,7 @@ public class EvaluationMeasures{
     private Map<String, Double> mean_avg_precison = new HashMap<String, Double>();
     private final static int TOTAL = 20;
 
+    public EvaluationMeasures(){}
     public EvaluationMeasures(Map<String,Map<String,Integer>> qrel)
     {
         qrel_data = qrel;
@@ -287,6 +289,74 @@ public class EvaluationMeasures{
         }
         return IDCG;
     }
+
+
+
+    public double calculateSpearmanCorrelation(String runFile1, String runFile2)
+    {
+        double Correlation = 0.0;
+        int nQuery=0;
+
+        Map<String, Map<String, Integer>> LuceneDefault = LuceneUtil.readRunFile(runFile1);
+        Map<String, Map<String, Integer>> customTFIDF = LuceneUtil.readRunFile(runFile2);
+
+        for (Map.Entry<String, Map<String, Integer>> Query : LuceneDefault.entrySet())
+        {
+
+            nQuery++;
+
+            //Summation of d^2
+            int dsquare=0;
+
+            //Number of pairs
+            int n = 0;
+
+            //Started as the current Document ID for the Default Lucene search.
+            int currentDocRank = 0;
+
+
+            for (Map.Entry<String, Integer> p : Query.getValue().entrySet())
+            {
+                    int diff=0;
+
+                    currentDocRank++;
+
+                    Integer docRank = LuceneUtil.docRanking(customTFIDF,Query.getKey(),p.getKey());
+                    n++;
+                    diff = currentDocRank - docRank;
+                    dsquare += Math.pow(diff,2);
+
+                    //System.out.println(Query.getKey()+","+p.getKey()+","+val);
+
+//                    if(docRank!=0)
+//                    {
+//                        n++;
+//                        diff = currentDocRank - docRank;
+//                        dsquare += Math.pow(diff,2);
+//                    }
+
+            }
+
+
+            double num = 6*dsquare;
+            double denom = n *((Math.pow(n,2))-1);
+
+            if(denom == 0)
+            {
+                continue;
+            }
+
+            double result = 1-( num /denom);
+
+
+            Correlation+= result;
+        }
+
+        return (Correlation/nQuery);
+
+    }
+
+
 
 
 }

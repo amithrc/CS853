@@ -54,20 +54,24 @@ public class LuceneMain
 				l.getIndexWriter();
 
 				 Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
-
 //
+////
 //				TFIDFSearcher defaultSearcher = new TFIDFSearcher("DefaultSearch");
 //				defaultSearcher.setDefaultLucene();
 //				defaultSearcher.writeRankings(p);
+//
+//
+				 TFIDFSearcher r = new TFIDFSearcher("TFIDF");
+				 r.setLNC();
+				 r.writeRankings(p);
+////
+//				 TFIDFSearcher BNN = new TFIDFSearcher("BNN");
+//				 BNN.setBNN();
+//				 BNN.writeRankings(p);
 
-
-//				 TFIDFSearcher r = new TFIDFSearcher("TFIDF");
-//				 r.setLNC();
-//				 r.writeRankings(p);
-
-				 TFIDFSearcher BNN = new TFIDFSearcher("BNN");
-				 BNN.setBNN();
-				 BNN.writeRankings(p);
+				EvaluationMeasures t= new EvaluationMeasures();
+				double val = t.calculateSpearmanCorrelation("output_DefaultSearch_ranking.txt","output_TFIDF_ranking.txt");
+				System.out.println(val);
 
 		}
 

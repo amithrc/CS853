@@ -90,7 +90,7 @@ public class LuceneUtil {
         for (Map.Entry<String, Map<String, Integer>> Query : q.entrySet()) {
 
             for (Map.Entry<String, Integer> p : Query.getValue().entrySet()) {
-                System.out.println(Query.getKey() + "," + p.getKey());
+                System.out.println(Query.getKey() + "," + p.getKey()+","+p.getValue());
 
             }
             System.out.println("----------------------------------------------------------------------------------------------------");
@@ -98,5 +98,84 @@ public class LuceneUtil {
         }
 
     }
+
+
+    static public Map<String, Map<String, Integer>> readRunFile(String filename)
+    {
+        Map<String, Map<String, Integer>> mp = new LinkedHashMap<String, Map<String, Integer>>();
+
+        File fp = new File(filename);
+        FileReader fr;
+        BufferedReader br = null;
+
+
+        try {
+            fr = new FileReader(fp);
+            br = new BufferedReader(fr);
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        while (true) {
+            try {
+                String line = br.readLine();
+
+                if (line == null) {
+                    break;
+                }
+
+                String[] words = line.split(" ");
+                String outKey = words[0];
+
+                if (mp.containsKey(outKey)) {
+                    Map<String, Integer> extract = mp.get(outKey);
+                    String inner_key = words[2];
+                    Integer is_relevant = new Integer(words[3]);
+                    extract.put(inner_key, is_relevant);
+                } else {
+
+                    String inner_key = words[2];
+                    Integer is_relevant = new Integer(words[3]);
+                    Map<String, Integer> temp = new LinkedHashMap<String, Integer>();
+                    temp.put(inner_key, is_relevant);
+                    mp.put(outKey, temp);
+                }
+            } catch (NullPointerException n) {
+                System.out.println(n.getMessage());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+
+        }
+        return mp;
+
+    }
+
+    /**
+     * @author: Amith RC
+     * Helper method to find the Document length. Used only in the spearman.
+     * This function is more specific to SpearMan
+     */
+
+    public static Integer docRanking(Map<String,Map<String,Integer>> m, String queryID, String paraID)
+    {
+
+        if(m.containsKey(queryID))
+        {
+            Map<String,Integer> insideHolder = m.get(queryID);
+
+            if(insideHolder.containsKey(paraID))
+            {
+                    //Return the Dock rank.
+                    return insideHolder.get(paraID);
+            }
+
+        }
+
+        return 0;
+    }
+
+
 
 }
