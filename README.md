@@ -74,6 +74,6 @@ Please run git clone https://github.com/amithrc/CS853.git
 cd CS853
 Run the below Installtion script.
 ```
-./install.sh <absolute_path_to_CBOR> <absolute_path_to_OUTLINE> <absolute_path_to_QREL>
+./install.sh <absolute_path_to_CBOR> <absolute_path_to_OUTLINE>
 ```
 
