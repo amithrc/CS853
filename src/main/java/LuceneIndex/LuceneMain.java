@@ -35,7 +35,7 @@ public class LuceneMain
 	public static void main(String[] args) throws IOException
 	{
 		String dest;
-		if( args.length < 3 )
+		if( args.length < 2 )
 		{
 			usage();
 		}
@@ -47,7 +47,7 @@ public class LuceneMain
 				LuceneConstants.setDirectoryName(dest);
 
 				LuceneConstants.setOutlineCbor(args[1]);
-				LuceneConstants.setQrelPath(args[2]);
+
 
 				//Create the new lucene Index
 				LuceneIndexer l = new LuceneIndexer();
