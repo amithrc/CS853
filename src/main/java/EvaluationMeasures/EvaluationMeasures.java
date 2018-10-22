@@ -10,7 +10,7 @@ import main.java.util.LuceneConstants;
 import main.java.util.LuceneUtil;
 
 public class EvaluationMeasures{
-
+    /*Evaluation Measures - MAP, Precision @ R, NDCG*/
     public Map<String,Map<String,Integer>> qrel_data;
 
     private Map<String, Double> mean_avg_precison = new HashMap<String, Double>();
