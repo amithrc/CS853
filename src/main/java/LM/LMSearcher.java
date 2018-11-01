@@ -21,10 +21,10 @@ public class LMSearcher extends LuceneSearcher{
 
         SimilarityBase sb;
 
-        switch(LM_varient){
+        switch(LM_varient) {
 
             //case 1 : laplace smoothing
-            case 1 :
+            case 1:
                 sb = new SimilarityBase() {
                     @Override
                     protected float score(BasicStats basicStats, float freq, float docLn) {
@@ -37,11 +37,26 @@ public class LMSearcher extends LuceneSearcher{
                     public String toString() {
                         return null;
                     }
-                    this.searcher.SimilarityBase(sb);
                 };
+            case 2:
+                sb = new SimilarityBase() {
+                    @Override
+                    protected float score(BasicStats basicStats, float freq, float docLn) {
+                        float numerator = freq + 1;
+                        float denominator = docLn + basicStats.numberOfFieldTokens();
+                        return numerator / denominator;
+                    }
 
+                    @Override
+                    public String toString() {
+                        return null;
+                    }
+                };
+            }
         }
-     }
+
+
+
 
      public void setLaplace(){
 
