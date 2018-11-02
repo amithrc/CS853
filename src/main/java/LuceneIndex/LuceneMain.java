@@ -57,6 +57,19 @@ public class LuceneMain
 
 				Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
 
+			    LMSearcher laplace = new LMSearcher("laplace");
+			    laplace.setLaplace();
+			    laplace.writeRankings(p);
+
+				//Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
+				//Evaluation Measure
+				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
+				System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
+				System.out.println("NDCG :" + measures_obj.calculateNDCG());
+
+
+
 				/*TFIDFSearcher defaultSearcher = new TFIDFSearcher("DefaultSearch");
 				defaultSearcher.setDefaultLucene();
 				defaultSearcher.writeRankings(p);
@@ -72,9 +85,10 @@ public class LuceneMain
 
 				 TFIDFSearcher ANC = new TFIDFSearcher("ANC");
 				 ANC.setANC();
-				 ANC.writeRankings(p);
+				 ANC.writeRankings(p);*/
 
-			     System.out.println("---------------------------Page Name----------------------------------------");
+
+			/*     System.out.println("---------------------------Page Name----------------------------------------");
 				 EvaluationMeasures t = new EvaluationMeasures();
 				 double val = t.calculateSpearmanCorrelation("output_DefaultSearch_ranking.txt","output_LNC_ranking.txt");
 				 System.out.println("SpearMan coefficient (LNC) ="+val);
@@ -115,11 +129,11 @@ public class LuceneMain
 					val = t.calculateSpearmanCorrelation("output_DefaultSearchSectionPath_ranking.txt","output_ANCSectionPath_ranking.txt");
 					System.out.println("SpearMan coefficient (ANC) SectionPath="+val);*/
 
+
 				LMSearcher jmSmoothing = new LMSearcher("JMSmoothing");
 				jmSmoothing.setJMSmoothing();
 				jmSmoothing.writeRankings(p);
 
-				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
 				System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
 				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
 				System.out.println("NDCG = "+measures_obj.calculateNDCG());
