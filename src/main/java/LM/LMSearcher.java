@@ -1,5 +1,6 @@
 package main.java.LM;
 import main.java.LuceneSearch.LuceneSearcher;
+import main.java.util.LuceneConstants;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.similarities.BasicStats;
@@ -29,7 +30,7 @@ public class LMSearcher extends LuceneSearcher{
                     @Override
                     protected float score(BasicStats basicStats, float freq, float docLn) {
                         float numerator = freq + 1;
-                        float denominator = docLn + basicStats.numberOfFieldTokens();
+                        float denominator = docLn + basicStats.getNumberOfFieldTokens();
                         return numerator / denominator;
                     }
 
@@ -42,9 +43,8 @@ public class LMSearcher extends LuceneSearcher{
                 sb = new SimilarityBase() {
                     @Override
                     protected float score(BasicStats basicStats, float freq, float docLn) {
-                        float numerator = freq + 1;
-                        float denominator = docLn + basicStats.numberOfFieldTokens();
-                        return numerator / denominator;
+                        float prob_term_doc = ((LuceneConstants.lambda*(freq/docLn))+(1-LuceneConstants.lambda)*(basicStats.getNumberOfFieldTokens()));
+                        return prob_term_doc;
                     }
 
                     @Override
@@ -64,5 +64,12 @@ public class LMSearcher extends LuceneSearcher{
          setSearchSimilarityBase(1);
 
      }
+
+    public void setJMSmoothing(){
+
+        System.out.println(this.methodName + " is being called");
+        setSearchSimilarityBase(2);
+
+    }
 
 }

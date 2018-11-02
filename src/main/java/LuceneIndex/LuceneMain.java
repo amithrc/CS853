@@ -7,6 +7,7 @@ import main.java.util.LuceneUtil;
 import java.util.Map;
 import main.java.lucenerankingmodels.TFIDFSearcher;
 import main.java.EvaluationMeasures.EvaluationMeasures;
+import main.java.LM.LMSearcher;
 
 /**
  * Main Class to handle the running of the method
@@ -55,7 +56,7 @@ public class LuceneMain
 
 				Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
 
-				TFIDFSearcher defaultSearcher = new TFIDFSearcher("DefaultSearch");
+				/*TFIDFSearcher defaultSearcher = new TFIDFSearcher("DefaultSearch");
 				defaultSearcher.setDefaultLucene();
 				defaultSearcher.writeRankings(p);
 
@@ -111,7 +112,11 @@ public class LuceneMain
 					System.out.println("SpearMan coefficient (BNN) SectionPath ="+val);
 
 					val = t.calculateSpearmanCorrelation("output_DefaultSearchSectionPath_ranking.txt","output_ANCSectionPath_ranking.txt");
-					System.out.println("SpearMan coefficient (ANC) SectionPath="+val);
+					System.out.println("SpearMan coefficient (ANC) SectionPath="+val);*/
+
+				LMSearcher jmSmoothing = new LMSearcher("JMSmoothing");
+				jmSmoothing.setJMSmoothing();
+				jmSmoothing.writeRankings(p);
 
 			    System.out.println("-----------------------------------------------------------------------------");
 
