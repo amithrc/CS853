@@ -49,6 +49,7 @@ public class LuceneMain
 
 				LuceneConstants.setOutlineCbor(args[1]);
 				LuceneConstants.setQrelPath(args[2]);
+				Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
 
 				//Create the new lucene Index
 				LuceneIndexer l = new LuceneIndexer();
@@ -117,6 +118,11 @@ public class LuceneMain
 				LMSearcher jmSmoothing = new LMSearcher("JMSmoothing");
 				jmSmoothing.setJMSmoothing();
 				jmSmoothing.writeRankings(p);
+
+				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
+				System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
+				System.out.println("NDCG = "+measures_obj.calculateNDCG());
 
 			    System.out.println("-----------------------------------------------------------------------------");
 
