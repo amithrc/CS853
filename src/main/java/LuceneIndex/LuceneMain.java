@@ -59,6 +59,14 @@ public class LuceneMain
 			    laplace.setLaplace();
 			    laplace.writeRankings(p);
 
+				Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
+				//Evaluation Measure
+				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
+				System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
+				System.out.println("NDCG :" + measures_obj.calculateNDCG());
+
+
 
 				/*TFIDFSearcher defaultSearcher = new TFIDFSearcher("DefaultSearch");
 				defaultSearcher.setDefaultLucene();
@@ -117,9 +125,9 @@ public class LuceneMain
 					System.out.println("SpearMan coefficient (BNN) SectionPath ="+val);
 
 					val = t.calculateSpearmanCorrelation("output_DefaultSearchSectionPath_ranking.txt","output_ANCSectionPath_ranking.txt");
-					System.out.println("SpearMan coefficient (ANC) SectionPath="+val);
+					System.out.println("SpearMan coefficient (ANC) SectionPath="+val);*/
 
-			    System.out.println("-----------------------------------------------------------------------------");*/
+			    System.out.println("-----------------------------------------------------------------------------");
 
 		}
 
