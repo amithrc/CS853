@@ -55,6 +55,8 @@ public class LMSearcher extends LuceneSearcher{
                         return null;
                     }
                 };
+                this.searcher.setSimilarity(sb);
+                break;
             }
         }
 
