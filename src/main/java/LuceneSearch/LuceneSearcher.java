@@ -45,7 +45,8 @@ public class LuceneSearcher
 
 	 public LuceneSearcher() throws IOException
 	 {
-		 searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME))));
+
+		 searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.UNIGRAM_DIRECTORY))));
 		 parser = new QueryParser("body", new StandardAnalyzer());
 	 }
 
@@ -55,7 +56,7 @@ public class LuceneSearcher
 	 public LuceneSearcher(Boolean isCustomSearch) throws IOException {
 
 		 //Create the searcher object from Lucene constants to get the directory name in the constants
-		 searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME))));
+		 //searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME))));
 
 		 if(isCustomSearch) {
 
@@ -69,7 +70,6 @@ public class LuceneSearcher
 
 		 parser = new QueryParser("body", new StandardAnalyzer());
 		 output_file_name = "Output_"+methodName+"_Ranking.txt";
-
 	    }
 
 	    /**

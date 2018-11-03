@@ -34,7 +34,9 @@ public class LuceneMain
 
 	public static void main(String[] args) throws IOException
 	{
-		String dest;
+		String dest1;
+		String dest2;
+
 		if( args.length < 3 )
 		{
 			usage();
@@ -42,16 +44,24 @@ public class LuceneMain
 
 		else
 		{
-				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
+				dest1 = System.getProperty("user.dir")+System.getProperty("file.separator")+"unigram_Index";
+				dest2 = System.getProperty("user.dir")+System.getProperty("file.separator")+"bigram_index";
+
 				LuceneConstants.setIndexFileName(args[0]);
-				LuceneConstants.setDirectoryName(dest);
+
+				LuceneConstants.setUnigram(dest1);
+			    LuceneConstants.setBigram(dest2);
 
 				LuceneConstants.setOutlineCbor(args[1]);
 				LuceneConstants.setQrelPath(args[2]);
 
-				//Create the new lucene Index
-				LuceneIndexer l = new LuceneIndexer();
-				l.getIndexWriter();
+				//Create the new lucene Index for uigram
+				LuceneIndexer Index1 = new LuceneIndexer();
+				Index1.getIndexWriter(false);
+
+				//create the new lucene Index for bigram
+			    LuceneIndexer Index2 = new LuceneIndexer();
+			    Index2.getIndexWriter(true);
 
 				Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
 
@@ -59,14 +69,23 @@ public class LuceneMain
 			    laplace.setLaplace();
 			    laplace.writeRankings(p);
 
-				Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
+				Map<String,Map<String,Integer>> qrel1 = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
 				//Evaluation Measure
-				EvaluationMeasures measures_obj = new EvaluationMeasures(qrel);
-				System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
-				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
-				System.out.println("NDCG :" + measures_obj.calculateNDCG());
+				EvaluationMeasures measures_obj1 = new EvaluationMeasures(qrel1);
+				System.out.println( "MAP = " + measures_obj1.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+measures_obj1.calculatePrecisionAtR());
+				System.out.println("NDCG :" + measures_obj1.calculateNDCG());
 
+				LMSearcher bigram = new LMSearcher("Bigram");
+				bigram.setLaplace();
+			    bigram.writeRankings(p);
 
+				Map<String,Map<String,Integer>> qrel2 = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
+				//Evaluation Measure
+				EvaluationMeasures measures_obj2 = new EvaluationMeasures(qrel2);
+				System.out.println( "MAP = " + measures_obj2.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+measures_obj2.calculatePrecisionAtR());
+				System.out.println("NDCG :" + measures_obj2.calculateNDCG());
 
 				/*TFIDFSearcher defaultSearcher = new TFIDFSearcher("DefaultSearch");
 				defaultSearcher.setDefaultLucene();
