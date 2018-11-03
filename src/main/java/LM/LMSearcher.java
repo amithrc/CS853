@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 public class LMSearcher extends LuceneSearcher{
-    protected IndexSearcher searcher1 = null;
+    protected IndexSearcher searcher = null;
 
     private LMSearcher() throws IOException{
 
@@ -25,9 +25,8 @@ public class LMSearcher extends LuceneSearcher{
     public LMSearcher(String methodName) throws IOException{
         this();
         if(methodName == "Bigram"){
-            System.out.println("here");
-            this.searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.BIGRAM_DIRECTORY))));
-            this.parser = new QueryParser("body", new ShingleAnalyzerWrapper(2, 2));
+            searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(Paths.get(LuceneConstants.BIGRAM_DIRECTORY))));
+            parser = new QueryParser("body", new ShingleAnalyzerWrapper(2, 2));
         }
         this.methodName = methodName;
         output_file_name = "output_"+ methodName+"_ranking.txt";
@@ -76,7 +75,7 @@ public class LMSearcher extends LuceneSearcher{
                 sb = new SimilarityBase() {
                     @Override
                     protected float score(BasicStats basicStats, float freq, float docLn) {
-                         return 0;
+                         return freq;
                     }
 
                     @Override
@@ -85,7 +84,7 @@ public class LMSearcher extends LuceneSearcher{
                     }
                 };
                 System.out.println(this.searcher);
-                this.searcher.setSimilarity(sb);
+                searcher.setSimilarity(sb);
                 break;
             }
         }
