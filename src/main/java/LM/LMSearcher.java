@@ -31,7 +31,7 @@ public class LMSearcher extends LuceneSearcher{
                         float numerator = freq + 1;
                         Long vocabSize = new Long(basicStats.getNumberOfFieldTokens());
                         float denominator = docLn + vocabSize.floatValue();
-                        return numerator / denominator;
+                        return (float)Math.log(numerator / denominator);
                     }
 
                     @Override
