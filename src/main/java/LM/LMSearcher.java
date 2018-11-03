@@ -47,7 +47,7 @@ public class LMSearcher extends LuceneSearcher{
                     @Override
                     protected float score(BasicStats basicStats, float freq, float docLn) {
                         float prob_term_doc = ((LuceneConstants.lambda*(freq/docLn))+(1-LuceneConstants.lambda)*(basicStats.getNumberOfFieldTokens()));
-                        return prob_term_doc;
+                        return (float)Math.log(prob_term_doc);
                     }
 
                     @Override
