@@ -140,6 +140,14 @@ public class LuceneMain
 
 			    System.out.println("-----------------------------------------------------------------------------");
 
+			    LMSearcher dirichletSmoothing = new LMSearcher("DirichletSmoothing");
+			    dirichletSmoothing.setDirichletSmoothing();
+			    dirichletSmoothing.writeRankings(p);
+			    
+				System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
+				System.out.println("NDCG = "+measures_obj.calculateNDCG());
+			    
 		}
 
 	}

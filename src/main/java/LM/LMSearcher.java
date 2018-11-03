@@ -7,17 +7,33 @@ import org.apache.lucene.search.similarities.BasicStats;
 import org.apache.lucene.search.similarities.SimilarityBase;
 import java.io.IOException;
 
+/**
+ * A language model approach for Lucene Searcher using unigram model approaches
+ *
+ */
+
 public class LMSearcher extends LuceneSearcher{
 
     private LMSearcher() throws IOException{
 
         super();
     }
+    
+    /**
+     * Language Model Searcher Constructor
+     * @param methodName
+     * @throws IOException
+     */
     public LMSearcher(String methodName) throws IOException{
         this();
         this.methodName = methodName;
         output_file_name = "output_"+ methodName+"_ranking.txt";
     }
+    
+    /**
+     * Sets the similarity base for the searcher
+     * @param LM_varient 1- Laplace 2- JM smoothing 3- Dirichlet
+     */
      private void setSearchSimilarityBase(int LM_varient){
 
         SimilarityBase sb;
@@ -37,11 +53,12 @@ public class LMSearcher extends LuceneSearcher{
 
                     @Override
                     public String toString() {
-                        return null;
+                        return "Laplace Smoothing";
                     }
                 };
                 this.searcher.setSimilarity(sb);
                 break;
+            //Case 2 JM
             case 2:
                 sb = new SimilarityBase() {
                     @Override
@@ -52,17 +69,32 @@ public class LMSearcher extends LuceneSearcher{
 
                     @Override
                     public String toString() {
-                        return null;
+                        return "JM Smoothing";
                     }
                 };
                 this.searcher.setSimilarity(sb);
                 break;
+            //Case 3 - Dirichlet
+            case 3:
+            	sb = new SimilarityBase() { 
+            		@Override
+            		protected float score(BasicStats bs, float freq, float docln) {
+            			float prob_term_doc = docln/ (docln + LuceneConstants.Mu);
+            			return prob_term_doc;
+            		}
+            		  @Override
+                      public String toString() {
+                          return "Dirichlet Smoothing";
+                      }
+            	};
+            	this.searcher.setSimilarity(sb);
+            	break;
             }
         }
 
 
 
-
+     //Set Laplace smoothing as the smoothing method
      public void setLaplace(){
 
         System.out.println(this.methodName + " is being called");
@@ -70,7 +102,16 @@ public class LMSearcher extends LuceneSearcher{
 
      }
 
+    //Set Jelinek Mercer as the smoothing method
     public void setJMSmoothing(){
+
+        System.out.println(this.methodName + " is being called");
+        setSearchSimilarityBase(2);
+
+    }
+    
+    //Set Dirichlet smoothing as the smoothing method
+    public void setDirichletSmoothing(){
 
         System.out.println(this.methodName + " is being called");
         setSearchSimilarityBase(2);

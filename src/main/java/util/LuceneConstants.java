@@ -16,6 +16,7 @@ public class LuceneConstants
     public static String QREL_PATH="";
 
     public static float lambda = 0.9f;
+    public static float Mu = 1000;
 
     public static Map<String, Map<String,Integer>> queryDocPairRead;
     public static void setIndexFileName(String s)
