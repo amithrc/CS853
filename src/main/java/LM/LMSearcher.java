@@ -75,7 +75,10 @@ public class LMSearcher extends LuceneSearcher{
                 sb = new SimilarityBase() {
                     @Override
                     protected float score(BasicStats basicStats, float freq, float docLn) {
-                         return freq;
+                        float numerator = freq + 1;
+                        Long vocabSize = new Long(basicStats.getNumberOfFieldTokens());
+                        float denominator = docLn + vocabSize.floatValue();
+                        return (float)Math.log(numerator / denominator);
                     }
 
                     @Override
