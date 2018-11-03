@@ -1,5 +1,6 @@
 package main.java.LuceneIndex;
 import main.java.util.LuceneConstants;
+import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -30,8 +31,7 @@ class LuceneIndexer
 {
 		private IndexWriter indexWriter;
 
-		LuceneIndexer()
-		{
+		LuceneIndexer() {
 			indexWriter = null;
 		}
 
@@ -42,25 +42,39 @@ class LuceneIndexer
 	    * @throws IOException
 	    */
 
-	    public void getIndexWriter() throws IOException {
-	    	
+	    public void getIndexWriter(boolean isBigram) throws IOException {
+
 	    	//If we haven't created and indexwriter yet
 	        if (indexWriter == null)
 	        {
-	        	
+
 	        	//Get the path of the index
-	            Directory indexDir = FSDirectory.open(Paths.get(LuceneConstants.DIRECTORY_NAME));
-	            
+
 	            //Create the configuration for the index
-	            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
-	            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-	            
-	            //Create the IndexWriter
-	            indexWriter = new IndexWriter(indexDir, config);
-	            
-	            //Parse the paragraphs and return the indexwriter with the corpus indexed
-	             parseParagraph(indexWriter);
-	           
+				if(isBigram){
+
+					Directory indexDir = FSDirectory.open(Paths.get(LuceneConstants.BIGRAM_DIRECTORY));
+					IndexWriterConfig config = new IndexWriterConfig(new ShingleAnalyzerWrapper(2, 2));
+					config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+
+					//Create the IndexWriter
+					indexWriter = new IndexWriter(indexDir, config);
+
+					//Parse the paragraphs and return the indexwriter with the corpus indexed
+					parseParagraph(indexWriter);
+
+				}else {
+
+					Directory indexDir = FSDirectory.open(Paths.get(LuceneConstants.UNIGRAM_DIRECTORY));
+					IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+					config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+
+					//Create the IndexWriter
+					indexWriter = new IndexWriter(indexDir, config);
+
+					//Parse the paragraphs and return the indexwriter with the corpus indexed
+					parseParagraph(indexWriter);
+				}
 	        }
 	   }
 	    
