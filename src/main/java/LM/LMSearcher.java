@@ -89,7 +89,7 @@ public class LMSearcher extends LuceneSearcher{
                         return "JM Smoothing";
                     }
                 };
-                this.searcher.setSimilarity(sb);
+                super.searcher.setSimilarity(sb);
                 break;
                 
             //Case 3 - Dirichlet
