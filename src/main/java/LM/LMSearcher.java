@@ -79,7 +79,7 @@ public class LMSearcher extends LuceneSearcher{
             	sb = new SimilarityBase() { 
             		@Override
             		protected float score(BasicStats bs, float freq, float docln) {
-            			float prob_term_doc = docln/ (docln + LuceneConstants.Mu);
+            			float prob_term_doc = (float)Math.log((double)docln/ (docln + LuceneConstants.Mu));
             			return prob_term_doc;
             		}
             		  @Override
