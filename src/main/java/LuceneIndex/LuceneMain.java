@@ -35,7 +35,9 @@ public class LuceneMain
 
 	public static void main(String[] args) throws IOException
 	{
-		String dest;
+		String dest1;
+		String dest2;
+
 		if( args.length < 3 )
 		{
 			usage();
@@ -43,17 +45,25 @@ public class LuceneMain
 
 		else
 		{
-				dest = System.getProperty("user.dir")+System.getProperty("file.separator")+"indexed_file";
+				dest1 = System.getProperty("user.dir")+System.getProperty("file.separator")+"unigram_Index";
+				dest2 = System.getProperty("user.dir")+System.getProperty("file.separator")+"bigram_index";
+
 				LuceneConstants.setIndexFileName(args[0]);
-				LuceneConstants.setDirectoryName(dest);
+
+				LuceneConstants.setUnigram(dest1);
+			    LuceneConstants.setBigram(dest2);
 
 				LuceneConstants.setOutlineCbor(args[1]);
 				LuceneConstants.setQrelPath(args[2]);
 				Map<String,Map<String,Integer>> qrel = LuceneUtil.createQrelMap(LuceneConstants.QREL_PATH);
 
-				//Create the new lucene Index
-				LuceneIndexer l = new LuceneIndexer();
-				l.getIndexWriter();
+				//Create the new lucene Index for uigram
+				LuceneIndexer Index1 = new LuceneIndexer();
+				Index1.getIndexWriter(false);
+
+				//create the new lucene Index for bigram
+			    LuceneIndexer Index2 = new LuceneIndexer();
+			    Index2.getIndexWriter(true);
 
 				Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
 
@@ -68,8 +78,13 @@ public class LuceneMain
 				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
 				System.out.println("NDCG :" + measures_obj.calculateNDCG());
 
+				LMSearcher bigram = new LMSearcher("Bigram");
+				bigram.setBigram();
+			    bigram.writeRankings(p);
 
-
+				System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
+				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
+				System.out.println("NDCG :" + measures_obj.calculateNDCG());
 				/*TFIDFSearcher defaultSearcher = new TFIDFSearcher("DefaultSearch");
 				defaultSearcher.setDefaultLucene();
 				defaultSearcher.writeRankings(p);
