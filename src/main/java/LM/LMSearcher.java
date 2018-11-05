@@ -97,7 +97,7 @@ public class LMSearcher extends LuceneSearcher{
             	sb = new SimilarityBase() { 
             		@Override
             		protected float score(BasicStats bs, float freq, float docln) {
-            			float prob_term_doc = (float)Math.log((double)docln/ (docln + LuceneConstants.Mu));
+            			float prob_term_doc = (float)Math.log((double)(docln/ (docln + LuceneConstants.Mu)));
             			return prob_term_doc;
             		}
             		  @Override
@@ -105,7 +105,7 @@ public class LMSearcher extends LuceneSearcher{
                           return "Dirichlet Smoothing";
                       }
             	};
-            	this.searcher.setSimilarity(sb);
+            	super.searcher.setSimilarity(sb);
             	break;
 
             case 4:
@@ -152,7 +152,7 @@ public class LMSearcher extends LuceneSearcher{
     public void setDirichletSmoothing(){
 
         System.out.println(this.methodName + " is being called");
-        setSearchSimilarityBase(2);
+        setSearchSimilarityBase(3);
 
     }
 
