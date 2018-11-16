@@ -5,6 +5,7 @@ import java.io.IOException;
 import main.java.util.LuceneConstants;
 import main.java.util.LuceneUtil;
 import java.util.Map;
+import main.java.RankLib.LearningToRank;
 import main.java.lucenerankingmodels.TFIDFSearcher;
 import main.java.EvaluationMeasures.EvaluationMeasures;
 import main.java.LM.LMSearcher;
@@ -67,7 +68,7 @@ public class LuceneMain
 
 				Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
 
-			    LMSearcher laplace = new LMSearcher("laplace");
+			   /* LMSearcher laplace = new LMSearcher("laplace");
 			    laplace.setLaplace();
 			    laplace.writeRankings(p);
 
@@ -84,7 +85,7 @@ public class LuceneMain
 
 				System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
 				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
-				System.out.println("NDCG :" + measures_obj.calculateNDCG());
+				System.out.println("NDCG :" + measures_obj.calculateNDCG());*/
 				/*TFIDFSearcher defaultSearcher = new TFIDFSearcher("DefaultSearch");
 				defaultSearcher.setDefaultLucene();
 				defaultSearcher.writeRankings(p);
@@ -130,7 +131,7 @@ public class LuceneMain
 				  BNNsec.setBNN();
 				  BNNsec.writeRankings(psec);
 
-				  TFIDFSearcher ANCsec = new TFIDFSearcher("ANCSectionPath");
+			LearningToRank	  TFIDFSearcher ANCsec = new TFIDFSearcher("ANCSectionPath");
 				  ANCsec.setANC();
 				  ANCsec.writeRankings(psec);
 
@@ -145,23 +146,9 @@ public class LuceneMain
 					System.out.println("SpearMan coefficient (ANC) SectionPath="+val);*/
 
 
-				LMSearcher jmSmoothing = new LMSearcher("JMSmoothing");
-				jmSmoothing.setJMSmoothing();
-				jmSmoothing.writeRankings(p);
+			       LearningToRank LR = new LearningToRank(qrel);
+			       LR.generetaeRanklibFile();
 
-				System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
-				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
-				System.out.println("NDCG = "+measures_obj.calculateNDCG());
-
-			    System.out.println("-----------------------------------------------------------------------------");
-
-			    LMSearcher dirichletSmoothing = new LMSearcher("DirichletSmoothing");
-			    dirichletSmoothing.setDirichletSmoothing();
-			    dirichletSmoothing.writeRankings(p);
-			    
-				System.out.println( "MAP = " + measures_obj.calculateMeanAvgPrecision());
-				System.out.println("P@R = "+measures_obj.calculatePrecisionAtR());
-				System.out.println("NDCG = "+measures_obj.calculateNDCG());
 			    
 		}
 

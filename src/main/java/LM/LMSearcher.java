@@ -72,7 +72,6 @@ public class LMSearcher extends LuceneSearcher{
                         return "Laplace Smoothing";
                     }
                 };
-                System.out.println(super.searcher);
                 super.searcher.setSimilarity(sb);
                 break;
             //Case 2 JM
