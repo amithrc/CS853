@@ -75,16 +75,7 @@ public class LearningToRank {
         LNC.setLNC();
         LNC.writeRankings(p);
 
-        for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPair.entrySet()){
-            String queryID = Query.getKey();
-            Map<String, Integer> docIDRank = Query.getValue();
-            for (Map.Entry<String, Integer> document: docIDRank.entrySet()) {
-
-                int relevancy = (getQrelRelevancy(queryID, document.getKey()) == 1 ? 1 : 0) ;
-                createRankingPair("LNC", queryID, document.getKey(),new float[]{1 / document.getValue(), relevancy});
-
-            }
-        }
+        callcreateRankingPair("LNC");
 
         //create Ranking pair for TFIdf : bnn
 
@@ -92,16 +83,7 @@ public class LearningToRank {
         BNN.setBNN();
         BNN.writeRankings(p);
 
-        for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPair.entrySet()){
-            String queryID = Query.getKey();
-            Map<String, Integer> docIDRank = Query.getValue();
-            for (Map.Entry<String, Integer> document: docIDRank.entrySet()) {
-
-                int relevancy = (getQrelRelevancy(queryID, document.getKey()) == 1 ? 1 : 0) ;
-                createRankingPair("BNN", queryID, document.getKey(),new float[]{1 / document.getValue(), relevancy});
-
-            }
-        }
+        callcreateRankingPair("BNN");
 
         // create Ranking pair fot Unigram Language model: Laplace
 
@@ -109,16 +91,7 @@ public class LearningToRank {
         laplace.setLaplace();
         laplace.writeRankings(p);
 
-        for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPair.entrySet()){
-            String queryID = Query.getKey();
-            Map<String, Integer> docIDRank = Query.getValue();
-            for (Map.Entry<String, Integer> document: docIDRank.entrySet()) {
-
-                int relevancy = (getQrelRelevancy(queryID, document.getKey()) == 1 ? 1 : 0) ;
-                createRankingPair("laplace", queryID, document.getKey(),new float[]{1 / document.getValue(), relevancy});
-
-            }
-        }
+        callcreateRankingPair("laplace");
 
         //create Ranking pair for Unigram Language model : JM
 
@@ -126,16 +99,7 @@ public class LearningToRank {
         jmSmoothing.setJMSmoothing();
         jmSmoothing.writeRankings(p);
 
-        for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPair.entrySet()){
-            String queryID = Query.getKey();
-            Map<String, Integer> docIDRank = Query.getValue();
-            for (Map.Entry<String, Integer> document: docIDRank.entrySet()) {
-
-                int relevancy = (getQrelRelevancy(queryID, document.getKey()) == 1 ? 1 : 0) ;
-                createRankingPair("JMSmoothing", queryID, document.getKey(),new float[]{1 / document.getValue(), relevancy});
-
-            }
-        }
+        callcreateRankingPair("JMSmoothing");
 
         // create Ranking pair for Unigram Language model : Dirichlet
 
@@ -143,16 +107,21 @@ public class LearningToRank {
         dirichletSmoothing.setDirichletSmoothing();
         dirichletSmoothing.writeRankings(p);
 
-        for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPair.entrySet()){
+        callcreateRankingPair("DirichletSmoothing");
+        }
+    private void callcreateRankingPair(String function_key){
+
+        for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPair.entrySet()) {
             String queryID = Query.getKey();
             Map<String, Integer> docIDRank = Query.getValue();
-            for (Map.Entry<String, Integer> document: docIDRank.entrySet()) {
+            for (Map.Entry<String, Integer> document : docIDRank.entrySet()) {
 
-                int relevancy = (getQrelRelevancy(queryID, document.getKey()) == 1 ? 1 : 0) ;
-                createRankingPair("DirichletSmoothing", queryID, document.getKey(),new float[]{1 / document.getValue(), relevancy});
+                int relevancy = (getQrelRelevancy(queryID, document.getKey()) == 1 ? 1 : 0);
+                createRankingPair(function_key, queryID, document.getKey(), new float[]{1 / document.getValue(), relevancy});
 
             }
         }
-
     }
 }
+
+
