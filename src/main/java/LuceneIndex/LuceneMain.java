@@ -63,8 +63,8 @@ public class LuceneMain
 				Index1.getIndexWriter(false);
 
 				//create the new lucene Index for bigram
-			    LuceneIndexer Index2 = new LuceneIndexer();
-			    Index2.getIndexWriter(true);
+			   /* LuceneIndexer Index2 = new LuceneIndexer();
+			    Index2.getIndexWriter(true);*/
 
 				Map<String,String> p = LuceneUtil.readOutline(LuceneConstants.OUTLINE_CBOR);
 
