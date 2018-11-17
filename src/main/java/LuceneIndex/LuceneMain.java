@@ -147,7 +147,7 @@ public class LuceneMain
 
 
 			       LearningToRank LR = new LearningToRank(qrel);
-			       LR.generetaeRanklibFile();
+			       LR.generateRanklibFile();
 
 			    
 		}
