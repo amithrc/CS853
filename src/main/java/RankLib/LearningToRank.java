@@ -114,7 +114,7 @@ public class LearningToRank {
         for (Map.Entry<String, Map<String,Integer>> Query : LuceneConstants.queryDocPair.entrySet()) {
             String queryID = Query.getKey();
             Map<String, Integer> docIDRank = Query.getValue();
-            for (Map.Entry<String, Integer> document : docIDRank.entrySet()) {
+            for (Map.Entry<String, Integer> document : docIDRank.entrySet()) { 
 
                 int relevancy = (getQrelRelevancy(queryID, document.getKey()) == 1 ? 1 : 0);
                 createRankingPair(function_key, queryID, document.getKey(), new float[]{1 / document.getValue(), relevancy});
