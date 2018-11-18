@@ -49,6 +49,7 @@ public class LearningToRank {
     private int getQrelRelevancy(String query_id, String doc_id){
         if(qrel_data.containsKey(query_id)){
             Map<String,Integer> temp = qrel_data.get(query_id);
+            //System.out.println("Qrel Data: " + temp);
             if(temp.containsKey(doc_id)){
                 return temp.get(doc_id);
             }
@@ -73,15 +74,17 @@ public class LearningToRank {
                if(extract.containsKey(doc_id)){ //function_key //doc_id
                    Map<String, float[]> function_extract = extract.get(doc_id);//function_key //doc_id
                    if(!function_extract.containsKey(function_key)) { //function_key
-                       Map<String, float[]> temp = new LinkedHashMap<String, float[]>();
+                       //Map<String, float[]> temp = new LinkedHashMap<String, float[]>();
                        function_extract.put(function_key, rank); //function_key
                        System.out.println("first section adding: " + function_key);
                        extract.put(doc_id, function_extract);//function_key //doc_id
                        ranking_pairs.put(query_key, extract);
+                   }else {
+                	   System.out.println("Error");
                    }
                }
                else{
-                   Map<String, Map<String, float[]>> query_temp = new LinkedHashMap<String, Map<String, float[]>>();
+                   //Map<String, Map<String, float[]>> query_temp = new LinkedHashMap<String, Map<String, float[]>>();
                    Map<String, float[]> function_temp = new LinkedHashMap<String, float[]>();
                    System.out.println("Middle section adding: " + function_key);
                    function_temp.put(function_key, rank);//function_key and function_temp
@@ -162,19 +165,11 @@ public class LearningToRank {
             for (Map.Entry<String, Integer> document : docIDRank.entrySet()) {
 
                 int relevancy = (getQrelRelevancy(queryID, document.getKey()) == 1 ? 1 : 0);
-                createRankingPair(function_key, queryID, document.getKey(), new float[]{1 / document.getValue(), relevancy});
+                float docval= (float)1.0 /document.getValue();
+               createRankingPair(function_key, queryID, document.getKey(), new float[]{docval, relevancy});
 
             }
         }
-    }
-    
-    
-    private void RankLibFormatToDoc() {
-    	if(this.ranking_pairs!= null && this.ranking_pairs.size() >0) {
-    		
-    		
-    		
-    	}
     }
     
     
@@ -195,6 +190,7 @@ public class LearningToRank {
 					for(String doc: ranking_pairs.get(qid).keySet()){
 						boolean targetSet = false;
 						String line = " qid:" + qid + " ";
+						
 						for(String rankingFunction: ranking_pairs.get(qid).get(doc).keySet()) {
 							//System.out.println(ranking_pairs.get(qid).get(doc).keySet());
 							float[] f = ranking_pairs.get(qid).get(doc).get(rankingFunction);
@@ -202,13 +198,15 @@ public class LearningToRank {
 							//If we didnt initialize the target, put it at the front
 							if(!targetSet) {
 								targetSet = true;
-								line = f[1] + line;
+								int targetVal = (int) f[1];
+								line = targetVal + line;
 							}
 							
 							//<target> qid:<qid> <feature>:<value> <feature>:<value> ... <feature>:<value> # <info>
 							line += rankingFunction + ":" + f[0] + " ";
 							
 						}
+						line += "#" + doc;
 						writer.write(line);
 						writer.newLine();
 						
