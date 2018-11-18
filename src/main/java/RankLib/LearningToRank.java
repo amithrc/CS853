@@ -19,7 +19,7 @@ import main.java.util.LuceneConstants;
 public class LearningToRank {
 
 	//Old: Map<Ranking Function, query, doc, vector and ranking float
-	//New: Map<Query Function, ranking, doc, vector and ranking float
+	//New: Map<Query Function, doc, ranking, vector and ranking float
     private Map<String, Map<String, Map<String, float[]>>> ranking_pairs = new LinkedHashMap<String, Map<String, Map<String, float[]>>>();
     private Map<String,Map<String,Integer>> qrel_data;
 
@@ -70,31 +70,35 @@ public class LearningToRank {
     	   if(ranking_pairs.containsKey(query_key))// query_key
            {
                Map<String, Map<String, float[]>> extract = ranking_pairs.get(query_key); //query_key
-               if(extract.containsKey(function_key)){ //function_key
-                   Map<String, float[]> function_extract = extract.get(function_key);//function_key
-                   if(!function_extract.containsKey(doc_id)) {
+               if(extract.containsKey(doc_id)){ //function_key //doc_id
+                   Map<String, float[]> function_extract = extract.get(doc_id);//function_key //doc_id
+                   if(!function_extract.containsKey(function_key)) { //function_key
                        Map<String, float[]> temp = new LinkedHashMap<String, float[]>();
-                       temp.put(doc_id, rank);
-                       extract.put(function_key, temp);//function_key
+                       function_extract.put(function_key, rank); //function_key
+                       System.out.println("first section adding: " + function_key);
+                       extract.put(doc_id, function_extract);//function_key //doc_id
+                       ranking_pairs.put(query_key, extract);
                    }
                }
                else{
                    Map<String, Map<String, float[]>> query_temp = new LinkedHashMap<String, Map<String, float[]>>();
-                   Map<String, float[]> doc_temp = new LinkedHashMap<String, float[]>();
-                   doc_temp.put(doc_id, rank);
-                   extract.put(function_key, doc_temp);//function_key
+                   Map<String, float[]> function_temp = new LinkedHashMap<String, float[]>();
+                   System.out.println("Middle section adding: " + function_key);
+                   function_temp.put(function_key, rank);//function_key and function_temp
+                   extract.put(doc_id, function_temp);//function_key //doc_id and function_temp
                    //extract.put(function_key, query_temp);
-                   //ranking_pairs.put(function_key, query_temp);
+                   ranking_pairs.put(query_key, extract);
                }
 
            }
            else
            {
-               Map<String, Map<String, float[]>> query_temp = new LinkedHashMap<String, Map<String, float[]>>();
-               Map<String, float[]> doc_temp = new LinkedHashMap<String, float[]>();
-               doc_temp.put(doc_id, rank);
-               query_temp.put(function_key, doc_temp);//function_key
-               ranking_pairs.put(query_key, query_temp);//query_key
+               Map<String, Map<String, float[]>> doc_temp = new LinkedHashMap<String, Map<String, float[]>>();
+               Map<String, float[]> function_temp = new LinkedHashMap<String, float[]>(); // function_temp
+               System.out.println("Last section adding: " + function_key);
+               function_temp.put(function_key, rank);//function_temp function_key
+               doc_temp.put(doc_id, function_temp);//function_key // doc_id doc_temp
+               ranking_pairs.put(query_key, doc_temp);//query_key //doc_temp
            }
     }
 
@@ -176,29 +180,46 @@ public class LearningToRank {
     
     private void writeRankingDoc(String fileName) throws IOException {
       Path path = Paths.get(fileName);
+      
 	try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)){
 		
 		//Null check
 			if(this.ranking_pairs!= null && this.ranking_pairs.size() >0) {
 				
-				//New: Map<Query Function, map <ranking, Map< doc, {vector and ranking float}>>>
+				//New: Map<Query Function, map <doc, Map< ranking, {vector and ranking float}>>>
 				
 				//Iterate through ranking pairs
 				for(String qid: ranking_pairs.keySet()) {
 					//Start ranklib format doc
 					
-					String line = " qid:" + qid;
-					for(String rankingfunction: ranking_pairs.get(qid).keySet()){
-						line += "s";
+					for(String doc: ranking_pairs.get(qid).keySet()){
+						boolean targetSet = false;
+						String line = " qid:" + qid + " ";
+						for(String rankingFunction: ranking_pairs.get(qid).get(doc).keySet()) {
+							//System.out.println(ranking_pairs.get(qid).get(doc).keySet());
+							float[] f = ranking_pairs.get(qid).get(doc).get(rankingFunction);
+							
+							//If we didnt initialize the target, put it at the front
+							if(!targetSet) {
+								targetSet = true;
+								line = f[1] + line;
+							}
+							
+							//<target> qid:<qid> <feature>:<value> <feature>:<value> ... <feature>:<value> # <info>
+							line += rankingFunction + ":" + f[0] + " ";
+							
+						}
 						writer.write(line);
 						writer.newLine();
+						
 					}
-					
+				
 					
 					
 				}
     		
 			}
+			//writer.write(ranking_pairs.toString());
 
       }
     }
