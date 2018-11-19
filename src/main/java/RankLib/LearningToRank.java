@@ -203,7 +203,7 @@ public class LearningToRank {
 							}
 							
 							//<target> qid:<qid> <feature>:<value> <feature>:<value> ... <feature>:<value> # <info>
-							line += rankingFunction + ":" + f[0] + " ";
+							line += this.getRankingFunctionCase(rankingFunction) + ":" + f[0] + " ";
 							
 						}
 						line += "#" + doc;
@@ -220,6 +220,28 @@ public class LearningToRank {
 			//writer.write(ranking_pairs.toString());
 
       }
+    }
+    
+    private String getRankingFunctionCase(String rankingFunction) {
+    	String s = null;
+    	switch(rankingFunction){
+    		case "LNC":
+    				s = "1";
+    				break;
+    		case "BNN":	
+    			s = "2";
+				break;
+    		case "laplace":	
+    			s = "3";
+				break;
+    		case "JMSmoothing":	
+    			s = "4";
+				break;
+    		case "DirichletSmoothing":	
+    			s = "5";
+				break;
+    	}
+    	return s;
     }
 }
 
